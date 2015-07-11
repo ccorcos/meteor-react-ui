@@ -1,5 +1,5 @@
 Meteor.startup(function() {
-  if (Posts.find().count() == 0 && (Users.find().count() == 0) {
+  if (Posts.find().count() == 0 && Users.find().count() == 0) {
     console.log('Seeding database...')
     function createUser() {
       Users.insert({
@@ -11,7 +11,7 @@ Meteor.startup(function() {
     R.map(createUser, R.range(0,50))
     userIds = R.pluck('_id', Users.find().fetch())
     function randomUserId() {
-      return Random.choise(userIds)
+      return Random.choice(userIds)
     }
     function createPost() {
       // each post has between 1 and 3 authors

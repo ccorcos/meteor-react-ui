@@ -1,0 +1,193 @@
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-full {
+  flex: 1 1 0;
+}
+.flex-hide {
+  flex: 0 0 0;
+  overflow: hidden;
+  opacity: 0;
+}
+.flex-unhide {
+  flex: auto;
+  opacity: 1;
+}
+.layout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: purple;
+  .flex-column;
+}
+
+// layout
+// - navbar small
+// - navbar large
+// - inner-layout
+// - - gutter large
+// - - inner-layout-content
+// - - gutter large
+// - tabbar
+
+@breakPoint: 750px;
+@contentMaxWidth: 500px;
+
+@smallNavHeight: 65px;
+@largeNavHeight: 80px;
+@smallNavButtonWidth: 50px;
+@smallTabHeight: 50px;
+
+.navbar {
+  &.small {
+    .flex-row;
+    flex: 0 0 @smallNavHeight;
+    .left, .right {
+      flex: 0 0 @smallNavButtonWidth;
+      display: flex;
+      > div {
+        flex: 1 1 0;
+        .flex-center;
+      }
+    }
+    .title {
+      flex: 1 1 0;
+      .flex-center;
+    }
+  }
+  &.large {
+    .flex-column;
+    flex: 0 0 @largeNavHeight;
+    .inner-navbar {
+      .flex-row;
+      .flex-full;
+      width: @breakPoint;
+      margin: 0 auto;
+      .title {
+        .flex-full;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        padding-left: 20px;
+      }
+      .tabbar {
+        flex: 0 0 200px;
+      }
+    }
+  }
+}
+
+.inner-layout {
+  .flex-row;
+  .flex-full;
+  .content {
+    .flex-column;
+    > div {
+      flex: 1 1 0;
+      overflow-y: scroll;
+    }
+  }
+  @media screen and (max-width: @breakPoint) {
+    // small screens
+    .content {
+      .flex-full;
+    }
+  }
+  @media screen and (min-width: @breakPoint) {
+    // large screens
+    .content {
+      flex: 0 0 @contentMaxWidth;
+      margin: 10px auto;
+    }
+    .gutter {
+      margin: 10px;
+      position: relative;
+      .flex-full;
+      .left, .right {
+        position: absolute;
+        top: 0;
+        height: @smallNavButtonWidth;
+        width: @smallNavButtonWidth;
+        display: flex;
+        > div {
+          flex: 1 1 0;
+          .flex-center;
+        }
+      }
+      .left {
+        right: 0;
+      }
+    }
+  }
+}
+
+.tabbar {
+  .flex-row;
+  &.small {
+    flex: 0 0 @smallTabHeight;
+  }
+  .tab {
+    flex: 1 1 0;
+    display: flex;
+    > div {
+      flex: 1 1 0;
+      .flex-center;
+    }
+  }
+}
+
+@media screen and (max-width: @breakPoint) {
+  .large.large.large {
+    .flex-hide;
+  }
+}
+
+@media screen and (min-width: @breakPoint) {
+  /*larger screens*/
+  .small.small.small {
+    .flex-hide;
+  }
+}
+
+
+
+
+
+.navbar {
+  background: #D8D8D8;
+}
+.left {
+  background: #4A90E2;
+}
+.right {
+  background: #F8E71C;
+}
+.title {
+  background: black;
+  color: white;
+}
+.toolbar {
+  background: red;
+}
+.content {
+  background: green;
+}
+.gutter {
+  background: orange;
+}
+.tabbar {
+  background: #9B9B9B;
+}

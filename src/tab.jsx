@@ -6,7 +6,8 @@ TabVC = React.createClass({
   displayroute: 'TabVC',
   propTypes: {
     initialRoute: React.PropTypes.object.isRequired,
-    renderScene: React.PropTypes.func.isRequired
+    renderScene: React.PropTypes.func.isRequired,
+    onTab: React.PropTypes.func
   },
   getInitialState() {
     // cache the tabs in the state if the route tab isn't null
@@ -26,6 +27,7 @@ TabVC = React.createClass({
     this.props.renderScene(this, route)
   },
   setTab(route) {
+    this.props.onTab && this.props.onTab(route)
     if (this.state.tabs[route.tab] || route.tab == null) {
       return this.setState({currentRoute: route})
     } else {

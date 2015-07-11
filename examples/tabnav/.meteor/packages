@@ -6,6 +6,9 @@
 
 meteor-platform
 jsx
-ccorcos:react-tabnav
 ccorcos:client-router
 ccorcos:any-db
+ramda:ramda
+digilord:faker
+react-runtime
+lauricio:less-autoprefixer
