@@ -163,8 +163,12 @@ Feed = React.createClass({
   },
   render: function() {
     console.log("render Feed")
+
     return (
       <div className="view feed">
+        <div className={`toolbar ${this.state.toolbarOpen ? 'open' : ''}`}>
+          TOOLBAR!
+        </div>
         This is the feed page!
       </div>
     );
@@ -257,6 +261,7 @@ var App = React.createClass({
     }]
   },
   renderTab: function(name) {
+    console.log("creating tab:", name)
     var props = {
       setTitle: this.titleStitch.set,
       setLeft: this.leftStitch.set,
