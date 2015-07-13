@@ -32,8 +32,8 @@ function createStitch(initialValue=null) {
   }
 
   var updateLaces = function(value) {
-    Object.keys(obj.laced).map(function(id) {
-      obj.laced[id](value)
+    Object.keys(obj.laces).map(function(id) {
+      obj.laces[id](value)
     })
   }
 

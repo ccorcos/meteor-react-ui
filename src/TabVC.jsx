@@ -6,28 +6,28 @@ var TabVC = React.createClass({
     InstanceMixin
   ],
   propTypes: {
-    laceCurrentTab: React.PropTypes.func.isRequired,
-    renderTab: React.PropTypes.func.isRequired,
+    laceCurrentRoute: React.PropTypes.func.isRequired,
+    renderRoute: React.PropTypes.func.isRequired,
   },
   getInitialInstance: function() {
     return {tabs:{}}
   },
   componentWillMount: function() {
-    this.props.laceCurrentTab((route) => {
-      this.setState({currentTab:route})
+    this.props.laceCurrentRoute((route) => {
+      this.setState({currentRoute:route})
       if (route.tab && !this.state.tabs[route.tab]) {
         this.setState({
           tabs: React.addons.update(this.state.tabs,
-            {$merge: {[route.tab]: this.props.renderTab(route)}})
+            {$merge: {[route.tab]: this.props.renderRoute(route)}})
         })
       }
     })
   },
   render: function() {
-    if (this.state.currentTab.tab == null) {
-      return this.props.renderTab(this.state.currentTab)
+    if (this.state.currentRoute.tab == null) {
+      return this.props.renderRoute(this.state.currentRoute)
     } else {
-      return this.state.tabs[this.state.currentTab.tab]
+      return this.state.tabs[this.state.currentRoute.tab]
     }
   }
 });

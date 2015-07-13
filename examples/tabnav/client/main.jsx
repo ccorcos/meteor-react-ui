@@ -1,5 +1,65 @@
 
 
+var App = React.createClass({
+  displayName: 'App',
+  mixins: [
+    React.addons.PureRenderMixin,
+  ],
+  componentWillMount: function() {
+    this.titleStitch = createStitch('')
+    this.leftStitch = createStitch()
+    this.rightStitch = createStitch()
+    this.currentRouteStitch = createStitch({tab:'feed', path:'/', name:'/'})
+    var setFeedTab = () =>
+      this.currentRouteStitch.set({tab:'feed', path:'/', name:'/'})
+    var setProfileTab = () =>
+      this.currentRouteStitch.set({tab:'profile', path:'/profile', name:'/profile'})
+    this.tabs = [{
+      name: 'feed',
+      component: <div onClick={setFeedTab}>FEED</div>
+    },{
+      name: 'profile',
+      component: <div onClick={setProfileTab}>PROFILE</div>
+    }]
+    this.tabVCInstance = createInstance()
+  },
+  renderRoute: function({tab}) {
+    var props = {
+      setTitle: this.titleStitch.set,
+      setLeft: this.leftStitch.set,
+      setRight: this.rightStitch.set,
+      instance: createInstance()
+    }
+    if (tab == "feed") {
+      return <Feed {...props}/>
+    } else if (tab == "profile") {
+      return <Profile {...props}/>
+    } else {
+      console.warn(`Unknown tab: ${name}`)
+      return false
+    }
+  },
+  render: function() {
+    return (
+      <Layout
+        laceTitle={this.titleStitch.lace}
+        laceCurrentRoute={this.currentRouteStitch.lace}
+        tabs={this.tabs}
+        laceLeftComponent={this.leftStitch.lace}
+        laceRightComponent={this.rightStitch.lace}>
+        <TabVC
+          laceCurrentRoute={this.currentRouteStitch.lace}
+          renderRoute={this.renderRoute}
+          instance={this.tabVCInstance}/>
+    </Layout>
+    );
+  }
+});
+
+Meteor.startup(function() {
+  React.render(<App/>, document.body);
+})
+
 
 
 

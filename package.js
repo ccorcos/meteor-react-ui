@@ -7,7 +7,7 @@ Package.describe({
 
 
 Package.onUse(function(api) {
-  
+
   api.use([
     "react-runtime",
     "jsx"
@@ -18,8 +18,16 @@ Package.onUse(function(api) {
   ]);
 
   api.addFiles([
-    "src/tab.jsx",
-    "src/nav.jsx"
+    "src/stitch.jsx",
+    "src/instance.jsx",
+    "src/TabVC.jsx",
+    "src/NavVC.jsx"
   ]);
+
+  // api.export('createInstance')
+  // api.export('InstanceMixin')
+  // api.export('createStitch')
+  // api.export('NavVC')
+  // api.export('TabVC')
 
 });

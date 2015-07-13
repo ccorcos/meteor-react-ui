@@ -7,8 +7,8 @@ var NavVC = React.createClass({
     InstanceMixin
   ],
   propTypes: {
-    initialScene: React.PropTypes.object.isRequired,
-    renderScene: React.PropTypes.func.isRequired
+    initialRoute: React.PropTypes.object.isRequired,
+    renderRoute: React.PropTypes.func.isRequired,
     onPush: React.PropTypes.func,
     onPop: React.PropTypes.func,
     onPopFront: React.PropTypes.func,
@@ -18,10 +18,10 @@ var NavVC = React.createClass({
   },
   getTransitionName: function(name) {
     (this.props.transitionNames && this.props.transitionNames[name]) || `navvc-${name}`
-  }
+  },
   getInitialInstance: function() {
     return {
-      stack: [this.props.renderScene(this.props.initialScene)],
+      stack: [this.props.renderRoute(this.props.initialRoute)],
       animation: this.getTransitionName('appear')
     }
   },
@@ -31,7 +31,7 @@ var NavVC = React.createClass({
   push: function(route) {
     this.setState({
       stack: React.addons.update(this.state.stack,
-        {$push:[this.props.renderScene(route)]}),
+        {$push:[this.props.renderRoute(route)]}),
       animation: this.getTransitionName('push')
     }, this.setCanPop);
   },
@@ -49,7 +49,7 @@ var NavVC = React.createClass({
   },
   popFront: function() {
     this.setState({stack: [stack[0]]});
-  }.
+  },
   componentWillMount: function() {
     this.props.onPush && this.props.onPush(this.push)
     this.props.onPop && this.props.onPop(this.pop)

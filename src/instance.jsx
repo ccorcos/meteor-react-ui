@@ -24,9 +24,17 @@ function createInstance() {
 // Note that its possible to replace one component with the same component
 // that has a different instance. Thus, we can't rely only on componentWillMount
 // and componentWillUnmount hooks.
+
 var InstanceMixin = {
   propTypes: {
     instance: React.PropTypes.object.isRequired
+  },
+  getInstance: function() {
+    if (!this.props.instance) {
+      console.error('You need to specify and instance prop:', this.constructor.displayName)
+    } else {
+      return this.props.instance
+    }
   },
   defaultSave: function(f) {
     // save the state by default
@@ -37,34 +45,38 @@ var InstanceMixin = {
   },
   save: function() {
     // call the override method if it exists
-    var f = this.props.instance.save
+    var f = this.getInstance().save
     this.saveInstance ? this.saveInstance(f) : this.defaultSave(f)
   },
   restore: function() {
-    this.props.instance.restore(this)
+    this.getInstance().restore(this)
   },
   getInitialState: function() {
-    if (this.props.instance.func) {
+    if (this.getInstance().func) {
       return {}
     } else {
-      return this.getInitialInstance()
+      return (this.getInitialInstance && this.getInitialInstance()) || {}
     }
   },
   componentWillMount: function() {
     this.restore()
+    this.instanceWillMount && this.instanceWillMount()
   },
   componentWillUnmount: function() {
     this.save()
+    this.instanceWillUnmount && this.instanceWillUnmount()
   },
   componentWillReceiveProps: function(newProps) {
-    if (newProps.instance != this.props.instance) {
+    if (newProps.instance != this.getInstance()) {
       this.save()
+      this.instanceWillUnmount && this.instanceWillUnmount()
     }
   },
   componentDidUpdate: function(prevProps, prevState) {
-    if (prevProps.instance != this.props.instance) {
+    if (prevProps.instance != this.getInstance()) {
       this.replaceState(this.getInitialState())
       this.restore()
+      this.instanceWillMount && this.instanceWillMount()
     }
   },
 }

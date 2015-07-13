@@ -1,6 +1,6 @@
 autoupdate@1.2.1
-babel-compiler@5.4.7
-babel-runtime@0.1.0
+babel-compiler@5.6.15
+babel-runtime@0.1.1
 base64@1.0.3
 binary-heap@1.0.3
 blaze@2.1.2
@@ -9,9 +9,10 @@ boilerplate-generator@1.0.3
 callback-hook@1.0.3
 ccorcos:any-db@0.0.1
 ccorcos:client-router@0.0.3
+ccorcos:react-tabnav@0.0.1
 check@1.0.5
 coffeescript@1.0.6
-cosmos:browserify@0.3.0
+cosmos:browserify@0.4.0
 ddp@1.1.0
 deps@1.0.7
 digilord:faker@1.0.6
@@ -24,7 +25,7 @@ http@1.1.0
 id-map@1.0.3
 jquery@1.11.3_2
 json@1.0.3
-jsx@0.1.0
+jsx@0.1.1
 launch-screen@1.0.2
 lauricio:less-autoprefixer@1.0.15
 livedata@1.0.13
@@ -39,9 +40,9 @@ observe-sequence@1.0.6
 ordered-dict@1.0.3
 ramda:ramda@0.14.0
 random@1.0.3
-react-runtime@0.13.3
-react-runtime-dev@0.13.3
-react-runtime-prod@0.13.3
+react-runtime@0.13.3_2
+react-runtime-dev@0.13.3_2
+react-runtime-prod@0.13.3_1
 reactive-dict@1.1.0
 reactive-var@1.0.5
 reload@1.1.3
