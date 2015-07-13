@@ -2,7 +2,7 @@ Package.describe({
   name: "ccorcos:react-tabnav",
   version: "0.0.1",
   summary: "Tab and Nav controllers for React",
-  git: "https://github.com/ccorcos/react-tabnav",
+  git: "https://github.com/ccorcos/meteor-react-tabnav",
 });
 
 

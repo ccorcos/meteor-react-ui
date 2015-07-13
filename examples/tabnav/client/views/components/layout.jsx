@@ -144,7 +144,8 @@ Feed = React.createClass({
   propTypes: {
     setTitle: React.PropTypes.func.isRequired,
     setLeft: React.PropTypes.func.isRequired,
-    setRight: React.PropTypes.func.isRequired
+    setRight: React.PropTypes.func.isRequired,
+    instance: React.PropTypes.object
   },
   getInitialState: function() {
     return {toolbarOpen: false}
@@ -160,6 +161,13 @@ Feed = React.createClass({
         TOOLS
       </div>
     ))
+    this.props.instance && this.props.instance.restore(this)
+  },
+  componentWillUnmount: function() {
+    state = this.state;
+    this.props.instance && this.props.instance.save(function(ctx) {
+      ctx.setState(state)
+    })
   },
   render: function() {
     console.log("render Feed")
@@ -180,7 +188,8 @@ Profile = React.createClass({
   propTypes: {
     setTitle: React.PropTypes.func.isRequired,
     setLeft: React.PropTypes.func.isRequired,
-    setRight: React.PropTypes.func.isRequired
+    setRight: React.PropTypes.func.isRequired,
+    instance: React.PropTypes.object
   },
   componentWillMount: function() {
     this.props.setTitle('Profile')
@@ -244,6 +253,18 @@ TabVC = React.createClass({
   }
 });
 
+function createInstance() {
+  var func = null;
+  return {
+    save: function(f) {
+      func = f;
+    },
+    restore: function(context) {
+      func && func(context);
+    }
+  }
+}
+
 var App = React.createClass({
   displayName: 'App',
   componentWillMount: function() {
@@ -265,7 +286,8 @@ var App = React.createClass({
     var props = {
       setTitle: this.titleStitch.set,
       setLeft: this.leftStitch.set,
-      setRight: this.rightStitch.set
+      setRight: this.rightStitch.set,
+      instance: createInstance()
     }
     if (name == "feed") {
       return <Feed {...props}/>
