@@ -18,8 +18,9 @@ Meteor.startup(function() {
       n = Random.choice(R.range(1,4))
       uIds = R.uniq(R.map(randomUserId, R.range(0,n)))
       Posts.insert({
-        title: faker.lorem.words(Random.choice(R.range(3,8))),
-        image: faker.image.image()
+        title: faker.lorem.words(Random.choice(R.range(3,8))).join(' '),
+        image: faker.image.avatar(),
+        userIds: uIds
       })
     }
     // create 50 posts
