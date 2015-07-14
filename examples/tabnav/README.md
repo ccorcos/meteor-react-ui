@@ -3,6 +3,7 @@
 - we want to use any-db so we can separate the subscriptions out on the client.
 - so lets try a simple example with foxes and whales and no database
 - lets add some nice animations and nice css
+- don't forget routing!
 
 - then lets think about how to use any-db with this
   - publish unordered collections

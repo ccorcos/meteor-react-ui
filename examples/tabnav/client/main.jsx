@@ -9,17 +9,17 @@ var App = React.createClass({
     this.titleStitch = createStitch('')
     this.leftStitch = createStitch()
     this.rightStitch = createStitch()
-    this.currentRouteStitch = createStitch({tab:'feed', path:'/', name:'/'})
+    this.currentRouteStitch = createStitch({tab:'foxes', path:'/', name:'/'})
     var setFeedTab = () =>
-      this.currentRouteStitch.set({tab:'feed', path:'/', name:'/'})
+      this.currentRouteStitch.set({tab:'foxes', path:'/', name:'/'})
     var setProfileTab = () =>
-      this.currentRouteStitch.set({tab:'profile', path:'/profile', name:'/profile'})
+      this.currentRouteStitch.set({tab:'whales', path:'/whales', name:'/whales'})
     this.tabs = [{
-      name: 'feed',
-      component: <div onClick={setFeedTab}>FEED</div>
+      name: 'foxes',
+      component: <div onClick={setFeedTab}>FOX</div>
     },{
-      name: 'profile',
-      component: <div onClick={setProfileTab}>PROFILE</div>
+      name: 'whales',
+      component: <div onClick={setProfileTab}>WHALE</div>
     }]
     this.tabVCInstance = createInstance()
   },
@@ -30,10 +30,10 @@ var App = React.createClass({
       setRight: this.rightStitch.set,
       instance: createInstance()
     }
-    if (tab == "feed") {
-      return <Feed {...props}/>
-    } else if (tab == "profile") {
-      return <Profile {...props}/>
+    if (tab == "foxes") {
+      return <Feed kind="foxes" {...props}/>
+    } else if (tab == "whales") {
+      return <Feed kind="whales"  {...props}/>
     } else {
       console.warn(`Unknown tab: ${name}`)
       return false
