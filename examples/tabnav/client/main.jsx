@@ -45,20 +45,18 @@ var App = React.createClass({
 
     var renderScene = (route) => {
       console.log("render scene:", route.path)
+      var props = {
+        setTitle: this.titleStitch.set,
+        push: pushStitch.call,
+        path: route.path,
+      }
+
       if (route.path == "/foxes" || route.path == "/whales") {
-        var props = {
-          setTitle: this.titleStitch.set,
-          push: pushStitch.call,
-          path: route.path,
-          kind: tab,
-          instance: createInstance()
-        }
-        return <Feed {...props}/>
-      } else if (route.name == "/foxes/:id") {
-        return false;
-      } else if (route.name == "/whales/:id") {
-        return false;
+        return <Feed kind={tab} instance={createInstance()}{...props}/>
+      } else if (route.name == "/foxes/:id" || route.name == "/whales/:id") {
+        return <Item kind={tab} id={route.params.id} {...props}/>;
       } else {
+        // render NotFound
         return false;
       }
     }

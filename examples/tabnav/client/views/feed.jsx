@@ -29,6 +29,8 @@ Feed = React.createClass({
   ],
   propTypes: {
     kind: React.PropTypes.string.isRequired,
+    path: React.PropTypes.string.isRequired,
+    push: React.PropTypes.func.isRequired,
     setTitle: React.PropTypes.func.isRequired,
     push: React.PropTypes.func.isRequired,
   },
@@ -58,7 +60,15 @@ Feed = React.createClass({
     })
   },
   render: function() {
-    var imgs = this.state.imgs.map((src) => { return <img src={src} key={src}/> })
+    var imgs = this.state.imgs.map((src, i) => {
+      return <img src={src} key={src} onClick={() => {
+          this.props.push({
+            name:`/${this.props.kind}/:id`,
+            path: `/${this.props.kind}/${i}`,
+            params: {id:i}
+          })
+        }}/>
+    })
     var loadMore = this.state.imgs.length >= this.state.limit ? (<button onClick={this.loadMore}>LOAD MORE</button>) : false
     return (
       <div className="view">
