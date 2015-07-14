@@ -102,7 +102,7 @@ Layout = React.createClass({
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
     laceTitle: React.PropTypes.func.isRequired,
-    laceCurrentRoute: React.PropTypes.func.isRequired,
+    laceCurrentTab: React.PropTypes.func.isRequired,
     tabs: React.PropTypes.array.isRequired,
     laceLeftComponent: React.PropTypes.func,
     laceRightComponent: React.PropTypes.func,
@@ -116,7 +116,7 @@ Layout = React.createClass({
     this.props.laceLeftComponent(this.set('leftComponent'))
     this.props.laceRightComponent(this.set('rightComponent'))
     this.props.laceTitle(this.set('title'))
-    this.props.laceCurrentRoute(({tab}) => {
+    this.props.laceCurrentTab(({tab}) => {
       this.setState({currentTab:tab})
     })
   },

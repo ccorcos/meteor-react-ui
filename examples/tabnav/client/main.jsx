@@ -7,13 +7,14 @@ var App = React.createClass({
   ],
   componentWillMount: function() {
     this.titleStitch = createStitch('')
-    this.leftStitch = createStitch()
-    this.rightStitch = createStitch()
-    this.currentRouteStitch = createStitch({tab:'foxes', path:'/', name:'/'})
+    this.leftStitch = createStitch(null)
+    this.rightStitch = createStitch(null)
+    this.currentTabStitch = createStitch({tab:'foxes'})
+
     var setFeedTab = () =>
-      this.currentRouteStitch.set({tab:'foxes', path:'/', name:'/'})
+      this.currentTabStitch.set({tab:'foxes'})
     var setProfileTab = () =>
-      this.currentRouteStitch.set({tab:'whales', path:'/whales', name:'/whales'})
+      this.currentTabStitch.set({tab:'whales'})
     this.tabs = [{
       name: 'foxes',
       component: <div onClick={setFeedTab}>FOX</div>
@@ -23,33 +24,83 @@ var App = React.createClass({
     }]
     this.tabVCInstance = createInstance()
   },
-  renderRoute: function({tab}) {
-    var props = {
-      setTitle: this.titleStitch.set,
-      setLeft: this.leftStitch.set,
-      setRight: this.rightStitch.set,
-      instance: createInstance()
+
+  renderTab: function(route) {
+    var tab = route.tab
+    console.log("render tab:", tab)
+
+    // for each tab, we need to stitch it into the Layout
+    var pushStitch = createStitch()
+    var popStitch = createStitch()
+    var canPopStitch = createStitch(false)
+
+    // stitch the back button up
+    canPopStitch.lace((canPop) => {
+      if (canPop) {
+        this.leftStitch.set(<div onClick={popStitch.call}>{"<"}</div>)
+      } else {
+        this.leftStitch.set(null)
+      }
+    })
+
+    var renderScene = (route) => {
+      console.log("render scene:", route.path)
+      if (route.path == "/foxes" || route.path == "/whales") {
+        var props = {
+          setTitle: this.titleStitch.set,
+          push: pushStitch.call,
+          path: route.path,
+          kind: tab,
+          instance: createInstance()
+        }
+        return <Feed {...props}/>
+      } else if (route.name == "/foxes/:id") {
+        return false;
+      } else if (route.name == "/whales/:id") {
+        return false;
+      } else {
+        return false;
+      }
     }
+
+    // If we're rendering a certain tab, then lets set the
+    // initial scene path.
+    if (tab == 'foxes') {
+      route.path = '/foxes'
+    } else if (tab == 'whales') {
+      route.path = '/whales'
+    }
+
+    // create an instance for the NavVC
+    var props = {
+      instance: createInstance(),
+      initialScene: route,
+      renderScene: renderScene,
+      onPush: pushStitch.on,
+      onPop: popStitch.on,
+      setCanPop: canPopStitch.set,
+    }
+
     if (tab == "foxes") {
-      return <Feed kind="foxes" {...props}/>
+      return <NavVC className={''} {...props}/>
     } else if (tab == "whales") {
-      return <Feed kind="whales"  {...props}/>
+      return <NavVC className={''} {...props}/>
     } else {
-      console.warn(`Unknown tab: ${name}`)
-      return false
+      // if its neither tab, then its got to be a null tab.
+      return <NavVC className={''} {...props}/>
     }
   },
   render: function() {
     return (
       <Layout
         laceTitle={this.titleStitch.lace}
-        laceCurrentRoute={this.currentRouteStitch.lace}
+        laceCurrentTab={this.currentTabStitch.lace}
         tabs={this.tabs}
         laceLeftComponent={this.leftStitch.lace}
         laceRightComponent={this.rightStitch.lace}>
         <TabVC
-          laceCurrentRoute={this.currentRouteStitch.lace}
-          renderRoute={this.renderRoute}
+          laceCurrentTab={this.currentTabStitch.lace}
+          renderTab={this.renderTab}
           instance={this.tabVCInstance}/>
     </Layout>
     );

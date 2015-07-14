@@ -30,8 +30,7 @@ Feed = React.createClass({
   propTypes: {
     kind: React.PropTypes.string.isRequired,
     setTitle: React.PropTypes.func.isRequired,
-    setLeft: React.PropTypes.func.isRequired,
-    setRight: React.PropTypes.func.isRequired,
+    push: React.PropTypes.func.isRequired,
   },
   fetch: function(n) {
     return feeds[this.props.kind].slice(0,n)
@@ -41,8 +40,6 @@ Feed = React.createClass({
   },
   instanceWillMount: function() {
     this.props.setTitle((this.props.kind == 'foxes' ? 'Fox' : 'Whale') + ' Feed')
-    this.props.setLeft(null)
-    this.props.setRight(null)
   },
   saveInstance: function(save) {
     // additionally save and restore the scroll position

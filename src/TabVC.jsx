@@ -6,28 +6,30 @@ var TabVC = React.createClass({
     InstanceMixin
   ],
   propTypes: {
-    laceCurrentRoute: React.PropTypes.func.isRequired,
-    renderRoute: React.PropTypes.func.isRequired,
+    laceCurrentTab: React.PropTypes.func.isRequired,
+    renderTab: React.PropTypes.func.isRequired,
   },
   getInitialInstance: function() {
     return {tabs:{}}
   },
   componentWillMount: function() {
-    this.props.laceCurrentRoute((route) => {
-      this.setState({currentRoute:route})
-      if (route.tab && !this.state.tabs[route.tab]) {
-        this.setState({
-          tabs: React.addons.update(this.state.tabs,
-            {$merge: {[route.tab]: this.props.renderRoute(route)}})
-        })
+    this.props.laceCurrentTab((route) => {
+      if (!this.state.currentTab || (this.state.currentTab.tab != route.tab)) {
+        this.setState({currentTab:route})
+        if (route.tab && !this.state.tabs[route.tab]) {
+          this.setState({
+            tabs: React.addons.update(this.state.tabs,
+              {$merge: {[route.tab]: this.props.renderTab(route)}})
+          })
+        }
       }
     })
   },
   render: function() {
-    if (this.state.currentRoute.tab == null) {
-      return this.props.renderRoute(this.state.currentRoute)
+    if (this.state.currentTab.tab == null) {
+      return this.props.renderTab(this.state.currentTab)
     } else {
-      return this.state.tabs[this.state.currentRoute.tab]
+      return this.state.tabs[this.state.currentTab.tab]
     }
   }
 });
