@@ -7,7 +7,6 @@ blaze@2.1.2
 blaze-tools@1.0.3
 boilerplate-generator@1.0.3
 callback-hook@1.0.3
-ccorcos:any-db@0.0.1
 ccorcos:client-router@0.0.3
 ccorcos:react-tabnav@0.0.1
 check@1.0.5
@@ -15,7 +14,6 @@ coffeescript@1.0.6
 cosmos:browserify@0.4.0
 ddp@1.1.0
 deps@1.0.7
-digilord:faker@1.0.6
 ejson@1.0.6
 fastclick@1.0.3
 geojson-utils@1.0.3
