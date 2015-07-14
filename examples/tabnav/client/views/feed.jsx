@@ -25,7 +25,8 @@ Feed = React.createClass({
   displayName: 'Feed',
   mixins: [
     React.addons.PureRenderMixin,
-    InstanceMixin
+    InstanceMixin,
+    SaveScrollTopMixin
   ],
   propTypes: {
     kind: React.PropTypes.string.isRequired,
@@ -34,29 +35,19 @@ Feed = React.createClass({
     setTitle: React.PropTypes.func.isRequired,
     push: React.PropTypes.func.isRequired,
   },
-  fetch: function(n) {
-    return feeds[this.props.kind].slice(0,n)
+  fetch: function(n, kind) {
+    return feeds[kind].slice(0,n)
   },
-  getInitialInstance: function() {
-    return {limit: 1, imgs: this.fetch(1)}
+  getInitialInstance: function(props) {
+    return {limit: 1, imgs: this.fetch(1, props.kind)}
   },
   instanceWillMount: function() {
     this.props.setTitle((this.props.kind == 'foxes' ? 'Fox' : 'Whale') + ' Feed')
   },
-  saveInstance: function(save) {
-    // additionally save and restore the scroll position
-    var state = this.state
-    var scrollTop = this.getDOMNode().scrollTop
-    save(function(ctx) {
-      ctx.setState(state, function() {
-        ctx.getDOMNode().scrollTop = scrollTop
-      })
-    })
-  },
   loadMore: function() {
     this.setState({
       limit: this.state.limit + 1,
-      imgs: this.fetch(this.state.limit + 1)
+      imgs: this.fetch(this.state.limit + 1, this.props.kind)
     })
   },
   render: function() {

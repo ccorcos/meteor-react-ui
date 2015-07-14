@@ -1,5 +1,10 @@
 Item = React.createClass({
   displayName: 'Item',
+  mixins: [
+    React.addons.PureRenderMixin,
+    InstanceMixin,
+    SaveScrollTopMixin
+  ],
   propTypes: {
     setTitle: React.PropTypes.func.isRequired,
     path: React.PropTypes.string.isRequired,

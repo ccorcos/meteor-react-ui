@@ -44,10 +44,8 @@ function createStitch(initialValue=null) {
   }
 
   obj.set = function(value) {
-    if (value != obj.value) {
-      obj.value = value
-      updateLaces(value)
-    }
+    obj.value = value
+    updateLaces(value)
   }
   obj.lace = function(func) {
     var id = newId()
@@ -72,4 +70,17 @@ function createStitch(initialValue=null) {
   return obj
 }
 
+var StitchMixin = {
+  componentWillMount: function() {
+    this.stitches = []
+  },
+  stitch: function(handle) {
+    this.stitches.push(handle)
+  },
+  componentWillUnmount: function() {
+    this.stitches.map(({stop}) => {stop()})
+  }
+}
+
 this.createStitch = createStitch;
+this.StitchMixin = StitchMixin;

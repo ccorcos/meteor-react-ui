@@ -18,6 +18,7 @@ Package.onUse(function(api) {
   ]);
 
   api.addFiles([
+    "src/utils.jsx",
     "src/stitch.jsx",
     "src/instance.jsx",
     "src/TabVC.jsx",
@@ -26,6 +27,7 @@ Package.onUse(function(api) {
 
   // api.export('createInstance')
   // api.export('InstanceMixin')
+  // api.export('SaveScrollTopMixin')
   // api.export('createStitch')
   // api.export('NavVC')
   // api.export('TabVC')

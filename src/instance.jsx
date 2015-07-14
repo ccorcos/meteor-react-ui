@@ -1,15 +1,50 @@
+// - componentWillMount
+//   - instanceWillMount
+// - componentDidMount
+//   - instanceDidMount
+// - componentWillUnmount
+//   - instanceWillUnmount
+
+
+
+
+// - getInitialInstanceState(props)
+// - saveInstance(function(save) { save(this.state, function() { /* update UI */})})
+// - instanceWillUpdate(props, state)
+// - instanceDidUpdate()
+
+
+
+
 // An "instance" can be used to save a React component's state
 // between renders so long as you pass the same instance prop.
 
+// quirks:
+// - in willMount, the state will be updated before render, but
+//   the state will not be updated within the method. So anything
+//   reacting to the state needs to happen in render or didMount.
+// - a workaround would be to create your own custom save/restore
+//   function using saveInstance. Then you can react to the new state
+//   before the next render.
+
+var noop = (function(){})
+
 function createInstance() {
   var obj = {
-    func: null
+    canRestore: false,
+    onWillMount: null,
+    onDidMount: null,
   }
-  obj.save = function(f) {
-    obj.func = f
+  obj.save = function(f1=noop, f2=noop) {
+    obj.onWillMount = f1
+    obj.onDidMount = f2
+    obj.canRestore = true
   }
-  obj.restore = function(context) {
-    obj.func && obj.func(context);
+  obj.restoreWillMount = function(context) {
+    obj.onWillMount && obj.onWillMount(context);
+  }
+  obj.restoreDidMount = function(context) {
+    obj.onDidMount && obj.onDidMount(context);
   }
   return obj
 }
@@ -25,16 +60,18 @@ function createInstance() {
 // that has a different instance. Thus, we can't rely only on componentWillMount
 // and componentWillUnmount hooks.
 
+var debug = function() {
+  console.log.apply(console, [
+    "Instance",
+    this.constructor.displayName,
+    ':'
+  ].concat(Array.prototype.slice.call(arguments)))
+}
+//var debug = (()=>{})
+
 var InstanceMixin = {
   propTypes: {
     instance: React.PropTypes.object.isRequired
-  },
-  getInstance: function() {
-    if (!this.props.instance) {
-      console.error('You need to specify and instance prop:', this.constructor.displayName)
-    } else {
-      return this.props.instance
-    }
   },
   defaultSave: function(f) {
     // save the state by default
@@ -43,43 +80,111 @@ var InstanceMixin = {
       ctx.setState(state)
     })
   },
-  save: function() {
-    // call the override method if it exists
-    var f = this.getInstance().save
+  save: function(instance) {
+    debug.call(this, 'save')
+    var f = instance.save
+    // call override if it exists
     this.saveInstance ? this.saveInstance(f) : this.defaultSave(f)
   },
-  restore: function() {
-    this.getInstance().restore(this)
-  },
-  getInitialState: function() {
-    if (this.getInstance().func) {
-      return {}
-    } else {
-      return (this.getInitialInstance && this.getInitialInstance()) || {}
+  restoreWillMount: function(instance) {
+    if (instance.canRestore) {
+      debug.call(this, 'restoreWillMount')
+      instance.restoreWillMount(this)
     }
   },
+  restoreDidMount: function(instance) {
+    if (instance.canRestore) {
+      debug.call(this, 'restoreDidMount')
+      instance.restoreDidMount(this)
+    }
+  },
+  initialState: function(instance, props) {
+    if (instance.canRestore) {
+      return {}
+    } else {
+      debug.call(this, 'getInitialInstance')
+      return (this.getInitialInstance && this.getInitialInstance(props)) || {}
+    }
+  },
+  getInitialState: function() {
+    return this.initialState(this.props.instance, this.props)
+  },
+  defineHook: function(name) {
+    var hooks = []
+    this[name + 'Hooks'] = hooks
+    this[name + 'Hook'] = (f) => { hooks.push(f) }
+  },
+  callHook: function(name, args...) {
+    debug.call(this, name)
+    this[name + 'Hooks'].map(function(f){ f.apply(this, args)})
+    this[name] && this[name]()
+  },
   componentWillMount: function() {
-    this.restore()
-    this.instanceWillMount && this.instanceWillMount()
+    this.defineHook('instanceWillMount')
+    this.defineHook('instanceDidMount')
+    this.defineHook('instanceWillUnmount')
+
+    // stitch instance mixin
+    this.instanceWillMountHook((this.props) => {
+      this.stitches = []
+    })
+    this.instanceWillUnmountHook(() => {
+      this.stitches.map(({stop}) => {stop()})
+    })
+    this.stitch = (handle) => {
+      this.stitches.push(handle)
+    }
+
+    debug.call(this, 'componentWillMount')
+    // the callback wont fire here because its before render!
+    this.restoreWillMount(this.props.instance)
+    this.callHook('instanceWillMount')
+
+  },
+  componentDidMount: function() {
+    debug.call(this, 'componentDidMount')
+    this.restoreDidMount(this.props.instance)
+    this.callHook('instanceDidMount')
   },
   componentWillUnmount: function() {
-    this.save()
-    this.instanceWillUnmount && this.instanceWillUnmount()
+    debug.call(this, 'componentWillUnmount')
+    this.save(this.props.instance)
+    this.callHook('instanceWillUnmount')
   },
   componentWillReceiveProps: function(newProps) {
-    if (newProps.instance != this.getInstance()) {
-      this.save()
-      this.instanceWillUnmount && this.instanceWillUnmount()
+    if (newProps.instance != this.props.instance) {
+      debug.call(this, 'new instance')
+      this.save(this.props.instance)
+      this.callHook('instanceWillUnmount')
+
+      this.replaceState(this.initialState(newProps.instance, newProps))
+      this.restoreWillMount(newProps.instance)
+      this.callHook('instanceWillMount')
     }
   },
   componentDidUpdate: function(prevProps, prevState) {
-    if (prevProps.instance != this.getInstance()) {
-      this.replaceState(this.getInitialState())
-      this.restore()
-      this.instanceWillMount && this.instanceWillMount()
+    if (prevProps.instance != this.props.instance) {
+      this.restoreDidMount(this.props.instance)
+      this.callHook('instanceDidMount')
     }
   },
 }
 
+var SaveScrollTopMixin = {
+  saveInstance: function(save) {
+    var state = this.state
+    var scrollTop = this.getDOMNode().scrollTop
+    debug.call(this, "save scroll top", scrollTop)
+    save(function(ctx) {
+      ctx.setState(state)
+    }, function(ctx) {
+      debug.call(ctx, "restore scroll top", scrollTop)
+      ctx.getDOMNode().scrollTop = scrollTop
+    })
+  },
+}
+
+
 this.createInstance = createInstance;
 this.InstanceMixin = InstanceMixin;
+this.SaveScrollTopMixin = SaveScrollTopMixin;

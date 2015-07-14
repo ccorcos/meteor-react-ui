@@ -27,7 +27,6 @@ var App = React.createClass({
 
   renderTab: function(route) {
     var tab = route.tab
-    console.log("render tab:", tab)
 
     // for each tab, we need to stitch it into the Layout
     var pushStitch = createStitch()
@@ -44,7 +43,6 @@ var App = React.createClass({
     })
 
     var renderScene = (route) => {
-      console.log("render scene:", route.path)
       var props = {
         setTitle: this.titleStitch.set,
         push: pushStitch.call,
@@ -52,9 +50,9 @@ var App = React.createClass({
       }
 
       if (route.path == "/foxes" || route.path == "/whales") {
-        return <Feed kind={tab} instance={createInstance()}{...props}/>
+        return <Feed kind={tab} instance={createInstance()} {...props}/>
       } else if (route.name == "/foxes/:id" || route.name == "/whales/:id") {
-        return <Item kind={tab} id={route.params.id} {...props}/>;
+        return <Item kind={tab} instance={createInstance()} id={route.params.id} {...props}/>;
       } else {
         // render NotFound
         return false;
