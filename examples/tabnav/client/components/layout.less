@@ -31,6 +31,13 @@
   bottom: 0;
   .flex-column;
 }
+.full-size {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 
 // layout
 // - navbar small
@@ -54,17 +61,25 @@
     .flex-row;
     flex: 0 0 @smallNavHeight;
     .left, .right {
+      position: relative;
       flex: 0 0 @navButtonWidth;
       display: flex;
       margin: ((@smallNavHeight - @navButtonWidth)/2) 0;
-      > div {
+      > span {
+        display: flex;
+      }
+      div {
         flex: 1 1 0;
         .flex-center;
       }
     }
     .title {
       flex: 1 1 0;
-      .flex-center;
+      position: relative;
+      div {
+        .flex-center;
+        .full-size;
+      }
     }
   }
   &.large {
@@ -157,6 +172,24 @@
   .small.small.small {
     .flex-hide;
   }
+}
+
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter.fade-enter-active {
+  transition: opacity .5s ease;
+  opacity: 1;
+}
+
+.fade-leave {
+  opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+  transition: opacity .5s ease;
+  opacity: 0;
 }
 
 // To visualize the layout, you can uncomment the background colors:

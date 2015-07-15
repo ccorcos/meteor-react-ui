@@ -1,6 +1,8 @@
 // This is a responsive layout as demonstated here:
 // http://codepen.io/ccorcos/pen/jPzNpP
 
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 // Left and Right components.
 NavBarSmall = React.createClass({
   displayName: 'NavBarSmall',
@@ -13,9 +15,21 @@ NavBarSmall = React.createClass({
   render: function() {
     return (
       <div className="navbar small">
-        <div className="left">{this.props.left || false}</div>
-        <div className="title">{this.props.title || ''}</div>
-        <div className="right">{this.props.right || false}</div>
+        <div className="left">
+          <ReactCSSTransitionGroup className="full-size" transitionName="fade">
+            {this.props.left || false}
+          </ReactCSSTransitionGroup>
+        </div>
+        <div className="title">
+          <ReactCSSTransitionGroup className="full-size" transitionName="fade">
+            <div key={this.props.title}>{this.props.title || ''}</div>
+          </ReactCSSTransitionGroup>
+        </div>
+        <div className="right">
+          <ReactCSSTransitionGroup className="full-size" transitionName="fade">
+            {this.props.right || false}
+          </ReactCSSTransitionGroup>
+        </div>
       </div>
     );
   }

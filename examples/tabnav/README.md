@@ -1,6 +1,5 @@
 # To Do
 
-- lets add some nice animations and nice css
 - don't forget routing!
 - comment it up!
 
