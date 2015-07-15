@@ -21,16 +21,6 @@
 // that has a different instance. Thus, we can't rely only on componentWillMount
 // and componentWillUnmount hooks.
 
-
-
-
-
-
-
-
-
-
-
 var debug = function() {
   console.log.apply(console, [
     "Instance",
@@ -90,7 +80,6 @@ var InstanceMixin = {
     this.props.instance.restoreUI(this)
   },
   componentWillReceiveProps: function(nextProps) {
-    console.log(nextProps)
     var nextInstance = nextProps.instance
     if (nextInstance != this.props.instance) {
       // save the current instance

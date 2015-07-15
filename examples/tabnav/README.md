@@ -1,16 +1,8 @@
 # To Do
 
-
-- examples:
-  - tabnav fox/whale
-  - navtab to make sure tabvc update properly
-
-
-- fix nav pop state
-- so lets try a simple example with foxes and whales and no database
 - lets add some nice animations and nice css
 - don't forget routing!
-- refator and clean things up
+- comment it up!
 
 
 - then lets think about how to use any-db with this

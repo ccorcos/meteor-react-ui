@@ -60,7 +60,7 @@ NavBarLarge = React.createClass({
       <div className="navbar large">
         <div className="inner-navbar">
           <div className="title">{this.props.title}</div>
-          <TabBar currentTab={this.props.currentTab} tabs={this.props.tabs}/>
+          <TabBar className="large" currentTab={this.props.currentTab} tabs={this.props.tabs}/>
         </div>
       </div>
     );
@@ -133,7 +133,6 @@ Layout = React.createClass({
   },
 
   render: function() {
-    console.log("Layout : render")
     return (
       <div className="layout">
         <NavBarSmall title={this.state.title} left={this.state.leftComponent} right={this.state.rightComponent}/>

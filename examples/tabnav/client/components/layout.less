@@ -29,7 +29,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: purple;
   .flex-column;
 }
 
@@ -47,7 +46,7 @@
 
 @smallNavHeight: 65px;
 @largeNavHeight: 80px;
-@smallNavButtonWidth: 50px;
+@navButtonWidth: 50px;
 @smallTabHeight: 50px;
 
 .navbar {
@@ -55,8 +54,9 @@
     .flex-row;
     flex: 0 0 @smallNavHeight;
     .left, .right {
-      flex: 0 0 @smallNavButtonWidth;
+      flex: 0 0 @navButtonWidth;
       display: flex;
+      margin: ((@smallNavHeight - @navButtonWidth)/2) 0;
       > div {
         flex: 1 1 0;
         .flex-center;
@@ -115,8 +115,8 @@
       .left, .right {
         position: absolute;
         top: 0;
-        height: @smallNavButtonWidth;
-        width: @smallNavButtonWidth;
+        height: @navButtonWidth;
+        width: @navButtonWidth;
         display: flex;
         > div {
           flex: 1 1 0;
@@ -158,29 +158,33 @@
   }
 }
 
+// To visualize the layout, you can uncomment the background colors:
 
-.navbar {
-  background: #D8D8D8;
-}
-.left {
-  background: #4A90E2;
-}
-.right {
-  background: #F8E71C;
-}
-.title {
-  background: black;
-  color: white;
-}
-.toolbar {
-  background: red;
-}
-.content {
-  background: green;
-}
-.gutter {
-  background: orange;
-}
-.tabbar {
-  background: #9B9B9B;
-}
+// .layout {
+//   background: purple;
+// }
+// .navbar {
+//   background: #D8D8D8;
+// }
+// .left {
+//   background: #4A90E2;
+// }
+// .right {
+//   background: #F8E71C;
+// }
+// .title {
+//   background: black;
+//   color: white;
+// }
+// .toolbar {
+//   background: red;
+// }
+// .content {
+//   background: green;
+// }
+// .gutter {
+//   background: orange;
+// }
+// .tabbar {
+//   background: #9B9B9B;
+// }

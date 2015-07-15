@@ -1,11 +1,12 @@
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-var debug = function() {
-  console.log.apply(console, [
-    "NavVC :",
-  ].concat(Array.prototype.slice.call(arguments)))
-}
-//var debug = (()=>{})
+// var debug = function() {
+//   console.log.apply(console, [
+//     "NavVC :",
+//   ].concat(Array.prototype.slice.call(arguments)))
+// }
+
+var debug = (()=>{})
 
 var NavVC = React.createClass({
   displayName: 'NavVC',

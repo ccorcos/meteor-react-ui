@@ -25,7 +25,7 @@ var App = React.createClass({
     this.backStitch = createStitch(null)
     this.backStitch.on((pop) => {
       if (pop) {
-        this.leftStitch.set(<div onClick={pop}>{"<"}</div>)
+        this.leftStitch.set(<div className="back-button" onClick={pop}>{"<"}</div>)
       } else {
         this.leftStitch.set(null)
       }

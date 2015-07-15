@@ -1,3 +1,5 @@
+@breakPoint: 750px;
+
 body {
   margin: 0;
   padding: 0;
@@ -19,8 +21,48 @@ img {
   text-align: center;
   .full-size;
   overflow-y: scroll;
+  img {
+    cursor: pointer;
+  }
 }
 
 button {
   margin: 10px;
+  cursor: pointer;
+}
+
+.tab {
+  cursor: pointer;
+}
+
+.navbar {
+  background: #D8D8D8;
+  border-bottom: 1px solid black;
+  .title {
+    font-size: 24px;
+  }
+}
+
+.back-button {
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 100px;
+  margin: 5px;
+}
+
+.tab.selected {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.tabbar.small {
+  border-top: 1px solid black;
+}
+
+@media screen and (max-width: @breakPoint) {
+  // small screens
+
+}
+@media screen and (min-width: @breakPoint) {
+
 }

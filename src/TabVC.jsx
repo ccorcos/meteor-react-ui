@@ -1,10 +1,11 @@
 
-var debug = function() {
-  console.log.apply(console, [
-    "TabVC :",
-  ].concat(Array.prototype.slice.call(arguments)))
-}
-//var debug = (()=>{})
+// var debug = function() {
+//   console.log.apply(console, [
+//     "TabVC :",
+//   ].concat(Array.prototype.slice.call(arguments)))
+// }
+
+var debug = (()=>{})
 
 function firstRest(f1, f2) {
   var first = true;
