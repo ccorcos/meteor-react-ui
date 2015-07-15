@@ -34,3 +34,28 @@ this.createStitch = function createStitch(initialValue=null) {
   }
   return obj
 }
+
+saveStitch = createStitch()
+
+this.save = saveStitch.set
+
+this.UIMixin = {
+  componentWillMount: function() {
+    this.listeners = []
+    this.save && this.listeners.push(saveStitch.listen(this.save))
+  },
+  componentWillUnmount: function() {
+    this.listeners.map(({stop}) => {stop()})
+    this.save && this.save()
+  }
+}
+
+
+if (Meteor.isClient) {
+  this.appInstance = Meteor._reload.migrationData('react-ui') || {}
+
+  Meteor._reload.onMigrate('react-ui', function() {
+    save()
+    return [true, appInstance]
+  })
+}

@@ -2,7 +2,7 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 this.NavVC = React.createClass({
   displayName: 'NavVC',
-  mixins: [React.addons.PureRenderMixin],
+  mixins: [React.addons.PureRenderMixin, UIMixin],
   propTypes: {
     instance: React.PropTypes.object.isRequired,
     initialSceneRoute: React.PropTypes.object.isRequired,
@@ -57,14 +57,12 @@ this.NavVC = React.createClass({
   },
   componentWillMount: function() {
     // start listeners
-    this.listeners = []
     this.props.listenPush && this.listeners.push(this.props.listenPush(this.push))
     this.props.listenPopFont && this.listeners.push(this.props.listenPopFont(this.popFront))
     this.setState({animation: 'navvc-appear'})
     this.props.setPop(this.state.stack.length > 1 ? this.pop : null)
   },
-  componentWillUnmount: function() {
-    this.listeners.map(({stop}) => stop())
+  save: function() {
     this.props.instance.state = this.state
   },
   render: function() {

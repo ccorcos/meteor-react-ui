@@ -1,6 +1,6 @@
 this.TabVC = React.createClass({
   displayName: 'TabVC',
-  mixins: [React.addons.PureRenderMixin],
+  mixins: [React.addons.PureRenderMixin, UIMixin],
   propTypes: {
     instance: React.PropTypes.object.isRequired,
     tabRouteStitch: React.PropTypes.object.isRequired,
@@ -18,7 +18,7 @@ this.TabVC = React.createClass({
     }
   },
   componentWillMount: function() {
-    this.listener = this.props.tabRouteStitch.listen((tabRoute) => {
+    this.listeners.push(this.props.tabRouteStitch.listen((tabRoute) => {
       // if tab changed
       if (this.state.currentTabRoute.tab != tabRoute.tab) {
         var update = {currentTabRoute: tabRoute}
@@ -41,10 +41,9 @@ this.TabVC = React.createClass({
         }
         this.setState(update)
       }
-    })
+    }))
   },
-  componentWillUnmount: function() {
-    this.listener.stop()
+  save: function() {
     this.props.instance.state = this.state
   },
   render: function() {

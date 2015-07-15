@@ -23,7 +23,7 @@ feeds = {foxes, whales}
 
 Feed = React.createClass({
   displayName: 'Feed',
-  mixins: [React.addons.PureRenderMixin],
+  mixins: [React.addons.PureRenderMixin, UIMixin],
   propTypes: {
     instance: React.PropTypes.object.isRequired,
     kind: React.PropTypes.string.isRequired,
@@ -50,7 +50,7 @@ Feed = React.createClass({
       this.getDOMNode().scrollTop = this.props.instance.scrollTop
     }
   },
-  componentWillUnmount: function() {
+  save: function() {
     this.props.instance.state = this.state
     this.props.instance.scrollTop = this.getDOMNode().scrollTop
   },

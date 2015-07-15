@@ -99,28 +99,37 @@ function renderApp(initialRoute, instance) {
   )
 }
 
+// A route looks something like this:
+//
+// route = {
+//   name: '/user/:id',
+//   path: '/user/234r234fced'
+//   params: {},
+//   queryParams: {}
+//   hash: ''
+// }
 
-Session.setDefault('instance', {})
+// We have one entry point to this program starting with
+// the url. After that, the views are managed within the
+// view controllers and urls just follow along.
+var start = R.once(R.call);
 
-App = React.createClass({
-  displayName: 'App',
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    initialRoute: React.PropTypes.object.isRequired
-  },
-  save: function() {
-    Session.set('instance', this.instance)
-  },
-  componentWillMount: function() {
-    this.instance = Session.get('instance')
-  },
-  componentWillUnmount: function() {
-    window.setTimeout(() => {
-      console.log("app save")
-      Session.set('instance', this.instance)
-    }, 0)
-  },
-  render: function() {
-    return renderApp(this.props.initialRoute, this.instance)
-  }
-});
+// define a route for each possible entry point of the
+// and specify which tab to start on.
+function defineRoute(name, initialTab) {
+  Router.route(name, function(route) {
+    start(function() {
+      route.tab = initialTab;
+      React.render(renderApp(route, appInstance), document.body);
+    });
+  });
+}
+
+// This app has a feed and a profile tab. Both are just
+// lists of posts. We have a null tab which will not be
+// cached so we can land directly on a post or a user.
+defineRoute('/', 'foxes');
+defineRoute('/whales', 'whales');
+defineRoute('/foxes/:id', "hidden");
+defineRoute('/whales/:id', "hidden");
+defineRoute('*', "hidden"); // Capture the 404 last
