@@ -14,10 +14,10 @@ var App = React.createClass({
     var setProfileTab = () => this.currentTabStitch.set({tab:'whales'})
     this.tabs = [{
       name: 'foxes',
-      component: <div onClick={setFeedTab}>FOX</div>
+      component: <div onClick={debounce(setFeedTab)}>FOX</div>
     },{
       name: 'whales',
-      component: <div onClick={setProfileTab}>WHALE</div>
+      component: <div onClick={debounce(setProfileTab)}>WHALE</div>
     }]
     this.tabVCInstance = createInstance()
 
@@ -25,7 +25,7 @@ var App = React.createClass({
     this.backStitch = createStitch(null)
     this.backStitch.on((pop) => {
       if (pop) {
-        this.leftStitch.set(<div className="back-button" onClick={pop}>{"<"}</div>)
+        this.leftStitch.set(<div className="back-button" onClick={debounce(pop)}>{"<"}</div>)
       } else {
         this.leftStitch.set(null)
       }

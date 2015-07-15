@@ -5,6 +5,8 @@
 - comment it up!
 
 
+
+
 - then lets think about how to use any-db with this
   - publish unordered collections
   - publish reactive joins
@@ -22,7 +24,7 @@
 // with the mixin: http://codepen.io/ccorcos/pen/vOrYGa
 
 
-
+http://codepen.io/ccorcos/pen/aOKGma?editors=010
 Some innate animations:
 
 .navvc-appear-appear {
@@ -80,31 +82,30 @@ Some innate animations:
 
 
 a more standard push pop animation:
-
 // appear nearly instantly
 .navvc-appear-appear {
-  opacity: 0.1;
+  opacity: 0.99;
 }
 .navvc-appear-appear.navvc-appear-appear-active {
   opacity: 1;
-  transition: opacity 0.01s ease;
+  transition: opacity 0.001s ease;
 }
 // similar to appear
 .navvc-instance-enter {
   z-index: 1;
-  opacity: 0.1;
+  opacity: 0.99;
 }
 .navvc-instance-enter.navvc-instance-enter-active {
   opacity: 1;
-  transition: opacity 0.01s ease;
+  transition: opacity 0.001s ease;
 }
 .navvc-instance-leave {
-  z-index: 0;
-  opacity: 1;
+  // z-index: 0;
+  opacity: 0.01;
 }
 .navvc-instance-leave.navvc-instance-leave-active {
   opacity: 0;
-  transition: opacity 0.1s ease;
+  transition: opacity 0.001s ease;
 }
 // push
 .navvc-push-enter {
@@ -116,7 +117,7 @@ a more standard push pop animation:
   transition: transform .5s ease;
 }
 .navvc-push-leave {
-  z-index: 0;
+  // z-index: 0;
   transform: translateX(0%);
 }
 .navvc-push-leave.navvc-push-leave-active {

@@ -1,12 +1,12 @@
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-var debug = function() {
-  console.log.apply(console, [
-    "NavVC :",
-  ].concat(Array.prototype.slice.call(arguments)))
-}
+// var debug = function() {
+//   console.log.apply(console, [
+//     "NavVC :",
+//   ].concat(Array.prototype.slice.call(arguments)))
+// }
 
-// var debug = (()=>{})
+var debug = (()=>{})
 
 var NavVC = React.createClass({
   displayName: 'NavVC',
@@ -80,9 +80,8 @@ var NavVC = React.createClass({
   render: function() {
     debug("render", this.state.animation)
     var last = this.state.stack.length - 1;
-    console.log(this.state.stack[last])
     return (
-      <ReactCSSTransitionGroup transitionAppear={true} className={'navvc-transition-group ' + this.props.className} transitionName={this.state.animation}>
+      <ReactCSSTransitionGroup transitionAppear={true} className={'navvc-transition-group ' + this.props.className + ' ' + this.state.animation} transitionName={this.state.animation}>
         {this.state.stack[last]}
       </ReactCSSTransitionGroup>
     );
