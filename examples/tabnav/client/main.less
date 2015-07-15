@@ -69,107 +69,60 @@ button {
 }
 
 
+// appear nearly instantly
 .navvc-appear-appear {
-  opacity: 0.999;
-  transition: opacity .001s linear;
+  opacity: 0.1;
 }
 .navvc-appear-appear.navvc-appear-appear-active {
   opacity: 1;
+  transition: opacity 0.01s ease;
 }
-.navvc-push-enter {
-  opacity: 0.999;
-  transition: opacity .001s linear;
-}
-.navvc-push-enter.navvc-push-enter-active {
-  opacity: 1;
-}
-.navvc-push-leave {
-  opacity: 0.999;
-  transition: opacity .001s linear;
-}
-.navvc-push-leave.navvc-push-leave-active {
-  opacity: 1;
-}
-.navvc-pop-enter {
-  opacity: 0.999;
-  transition: opacity .001s linear;
-}
-.navvc-pop-enter.navvc-pop-enter-active {
-  opacity: 1;
-}
-.navvc-pop-leave {
-  opacity: 0.999;
-  transition: opacity .001s linear;
-}
-.navvc-pop-leave.pop-leave-active {
-  transform: translateX(100%);
-}
+// similar to appear
 .navvc-instance-enter {
-  opacity: 0.999;
-  transition: opacity .001s linear;
+  z-index: 1;
+  opacity: 0.1;
 }
 .navvc-instance-enter.navvc-instance-enter-active {
   opacity: 1;
+  transition: opacity 0.01s ease;
 }
 .navvc-instance-leave {
-  opacity: 0.999;
-  transition: opacity .001s linear;
-}
-.navvc-instance-leave.instance-leave-active {
+  z-index: 0;
   opacity: 1;
 }
-
-
-
-//
-//
-//
-// .navvc-push-enter {
-//   z-index: 10;
-//   transform: translateX(100%);
-//   transition: transform .5s ease;
-// }
-// .navvc-push-enter.navvc-push-enter-active {
-//   transform: translateX(0%);
-// }
-// .navvc-push-leave {
-//   z-index: 0;
-//   transform: translateX(0%);
-//   transition: transform .5s ease;
-// }
-// .navvc-push-leave.navvc-push-leave-active {
-//   transform: translateX(-33%);
-// }
-//
-// .navvc-pop-enter {
-//   z-index: 0;
-//   transform: translateX(-33%);
-//   transition: transform .5s ease;
-// }
-// .navvc-pop-enter.navvc-pop-enter-active {
-//   transform: translateX(0%);
-// }
-// .navvc-pop-leave {
-//   z-index: 10;
-//   transform: translateX(0%);
-//   transition: transform .5s ease;
-// }
-// .navvc-pop-leave.pop-leave-active {
-//   transform: translateX(100%);
-// }
-//
-// .navvc-instance-enter {
-//   opacity: .99;
-//   transition: opacity 0.001s ease;
-// }
-// .navvc-instance-enter.navvc-instance-enter-active {
-//   opacity: 1;
-// }
-// .navvc-instance-leave {
-//   z-index: 10;
-//   opacity: .99;
-//   transition: opacity 0.001s ease;
-// }
-// .navvc-instance-leave.instance-leave-active {
-//   opacity: 1;
-// }
+.navvc-instance-leave.navvc-instance-leave-active {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+// push
+.navvc-push-enter {
+  z-index: 1;
+  transform: translateX(100%);
+}
+.navvc-push-enter.navvc-push-enter-active {
+  transform: translateX(0%);
+  transition: transform .5s ease;
+}
+.navvc-push-leave {
+  z-index: 0;
+  transform: translateX(0%);
+}
+.navvc-push-leave.navvc-push-leave-active {
+  transform: translateX(-33%);
+  transition: transform .5s ease;
+}
+// pop
+.navvc-pop-enter {
+  transform: translateX(-33%);
+}
+.navvc-pop-enter.navvc-pop-enter-active {
+  transform: translateX(0%);
+  transition: transform .5s ease;
+}
+.navvc-pop-leave {
+  transform: translateX(0%);
+}
+.navvc-pop-leave.navvc-pop-leave-active {
+  transform: translateX(100%);
+  transition: transform .5s ease;
+}

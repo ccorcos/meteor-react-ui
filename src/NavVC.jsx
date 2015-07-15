@@ -78,8 +78,9 @@ var NavVC = React.createClass({
     this.setState({animation: this.getTransitionName('instance')})
   },
   render: function() {
-    debug("render")
+    debug("render", this.state.animation)
     var last = this.state.stack.length - 1;
+    console.log(this.state.stack[last])
     return (
       <ReactCSSTransitionGroup transitionAppear={true} className={'navvc-transition-group ' + this.props.className} transitionName={this.state.animation}>
         {this.state.stack[last]}
