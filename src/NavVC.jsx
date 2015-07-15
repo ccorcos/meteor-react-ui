@@ -1,12 +1,12 @@
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-// var debug = function() {
-//   console.log.apply(console, [
-//     "NavVC :",
-//   ].concat(Array.prototype.slice.call(arguments)))
-// }
+var debug = function() {
+  console.log.apply(console, [
+    "NavVC :",
+  ].concat(Array.prototype.slice.call(arguments)))
+}
 
-var debug = (()=>{})
+// var debug = (()=>{})
 
 var NavVC = React.createClass({
   displayName: 'NavVC',
@@ -22,15 +22,10 @@ var NavVC = React.createClass({
     onPop: React.PropTypes.func,
     onPopFront: React.PropTypes.func,
     setBack: React.PropTypes.func,
-    transitionNames: React.PropTypes.object,
     className: React.PropTypes.string
   },
   getTransitionName: function(name) {
-    if (this.props.transitionNames) {
-      return this.props.transitionNames[name]
-    } else {
-      return `navvc-${name}`
-    }
+    return `navvc-${name}`
   },
   getInitialInstanceState: function(props) {
     debug("getInitialInstance", props.initialScene)
@@ -80,12 +75,13 @@ var NavVC = React.createClass({
     this.stopListeners()
     this.startListeners(props)
     props.setBack(state.stack.length > 1 ? this.pop : null)
+    this.setState({animation: this.getTransitionName('instance')})
   },
   render: function() {
     debug("render")
     var last = this.state.stack.length - 1;
     return (
-      <ReactCSSTransitionGroup className={'navvc-transition-group ' + this.props.className} transitionName={this.state.animation}>
+      <ReactCSSTransitionGroup transitionAppear={true} className={'navvc-transition-group ' + this.props.className} transitionName={this.state.animation}>
         {this.state.stack[last]}
       </ReactCSSTransitionGroup>
     );

@@ -46,9 +46,9 @@ var App = React.createClass({
       }
 
       if (route.path == "/foxes" || route.path == "/whales") {
-        return <Feed kind={tab} instance={createInstance()} {...props}/>
+        return <Feed key={route.path} kind={tab} instance={createInstance()} {...props}/>
       } else if (route.name == "/foxes/:id" || route.name == "/whales/:id") {
-        return <Item kind={tab} instance={createInstance()} id={route.params.id} {...props}/>;
+        return <Item key={route.path} kind={tab} instance={createInstance()} id={route.params.id} {...props}/>;
       } else {
         // render NotFound
         return false;
