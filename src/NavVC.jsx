@@ -12,14 +12,15 @@ var NavVC = React.createClass({
   mixins: [
     React.addons.PureRenderMixin,
     InstanceMixin,
+    ListenerMixin
   ],
   propTypes: {
     initialScene: React.PropTypes.object.isRequired,
     renderScene: React.PropTypes.func.isRequired,
-    onPush: React.PropTypes.func,
-    onPop: React.PropTypes.func,
+    onPush: React.PropTypes.func.isRequired,
+    onPop: React.PropTypes.func.isRequired,
     onPopFront: React.PropTypes.func,
-    setCanPop: React.PropTypes.func,
+    setCanPop: React.PropTypes.func.isRequired,
     transitionNames: React.PropTypes.object,
     className: React.PropTypes.string
   },
@@ -30,18 +31,12 @@ var NavVC = React.createClass({
       return `navvc-${name}`
     }
   },
-  getInitialInstance: function(props) {
+  getInitialInstanceState: function(props) {
     debug("getInitialInstance", props.initialScene)
-    var stack = [props.renderScene(clone(props.initialScene))]
-    this.setCanPop(stack)
     return {
-      stack: stack,
+      stack: [props.renderScene(clone(props.initialScene))],
       animation: this.getTransitionName('appear')
     }
-  },
-  setCanPop: function(stack) {
-    debug("setCanPop", stack.length > 1)
-    this.props.setCanPop && this.props.setCanPop(stack.length > 1)
   },
   push: function(route) {
     debug("push", route)
@@ -51,7 +46,7 @@ var NavVC = React.createClass({
       stack: nextStack,
       animation: this.getTransitionName('push')
     })
-    this.setCanPop(nextStack)
+    this.props.setCanPop(stack.length > 1)
   },
   pop: function() {
     debug("pop")
@@ -65,25 +60,25 @@ var NavVC = React.createClass({
         stack: nextStack,
         animation:  this.getTransitionName('pop')
       })
-      this.setCanPop(nextStack)
+      this.props.setCanPop(stack.length > 1)
     }
   },
   popFront: function() {
     debug("popFront")
     this.setState({stack: [stack[0]]});
   },
-  instanceWillMount: function() {
-    // these props could change between instances
-    this.props.onPush && this.stitch(this.props.onPush(this.push))
-    this.props.onPop && this.stitch(this.props.onPop(this.pop))
-    this.props.onPopFront && this.stitch(this.props.onPopFront(this.popFront))
+  startListeners: function(props) {
+    this.addListener(props.onPush(this.push))
+    this.addListener(props.onPop(this.pop))
+    props.onPopFront && this.addListener(props.onPopFront(this.popFront))
+  }
+  componentWillMount: function() {
+    this.startListeners(this.props)
   },
-  saveInstance: function(save) {
-    var state = this.state
-    save(function(ctx) {
-      ctx.setState(state)
-      ctx.setCanPop(state.stack)
-    })
+  instanceWillUpdate: function(props, state) {
+    this.stopListeners()
+    this.startListeners(props)
+    this.props.setCanPop(state.stack.length > 1)
   },
   render: function() {
     debug("render")

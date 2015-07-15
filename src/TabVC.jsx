@@ -23,52 +23,38 @@ var TabVC = React.createClass({
   mixins: [
     React.addons.PureRenderMixin,
     InstanceMixin,
+    ListenerMixin
   ],
   propTypes: {
-    laceCurrentTab: React.PropTypes.func.isRequired,
+    currentTabStitch: React.PropTypes.obj.isRequired,
     renderTab: React.PropTypes.func.isRequired,
   },
-  getInitialInstance: function(props) {
-    return {tabs:{}}
-  },
-  saveInstance: function(save) {
-    var state = this.state
-    save(function(ctx) {
-      ctx.setState(state)
-      ctx.stitchCurrentTab(state)
-    })
-  },
-  stitchCurrentTab: function(initialState) {
-    this.stitch(this.props.laceCurrentTab(firstRest((route) => {
-      // first
-      if (!initialState.currentTab || (initialState.currentTab.tab != route.tab)) {
-        debug("update initial currentTab", route)
-        this.setState({currentTab: route})
-        if (route.tab && !initialState.tabs[route.tab]) {
-          this.setState({
-            tabs: React.addons.update(initialState.tabs,
-              {$merge: {[route.tab]: this.props.renderTab(clone(route))}})
-          })
-        }
-      }
-    }, (route) => {
-      // rest
-      if (!this.state.currentTab || (this.state.currentTab.tab != route.tab)) {
-        debug("update currentTab", route)
-        this.setState({currentTab: route})
-        if (route.tab && !this.state.tabs[route.tab]) {
-          this.setState({
-            tabs: React.addons.update(this.state.tabs,
-              {$merge: {[route.tab]: this.props.renderTab(clone(route))}})
-          })
-        }
-      }
-    })))
-  },
-  instanceWillMount: function() {
-    if (!this.props.instance.canRestore) {
-      this.stitchCurrentTab(this.state)
+  getInitialInstanceState: function(props) {
+    var route = props.currentTabStitch.value
+    var state = {currentTab: route}
+    if (route.tab) {
+      state[route.tab] = props.renderTab(clone(route))
     }
+    return state
+  },
+  startListeners: function(props) {
+    this.addListener(props.currentTabStitch.on((route) => {
+      if (this.state.currentTab.tab != route.tab) {
+        var update = {currentTab: route}
+        if (route.tab && !this.state.tabs[route.tab]) {
+          update.tabs = React.addons.update(this.state.tabs,
+              {$merge: {[route.tab]: this.props.renderTab(clone(route))}})
+        }
+        this.setState(update)
+      }
+    }))
+  }
+  componentWillMount: function() {
+    this.startListeners(this.props)
+  },
+  instanceWillUpdate: function(props, state) {
+    this.stopListeners()
+    this.startListeners(props)
   },
   render: function() {
     debug("render", this.state.currentTab)

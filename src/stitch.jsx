@@ -26,61 +26,46 @@ function createStitch(initialValue=null) {
   var newId = counter()
 
   var obj = {
-    laces: {},
-    calls: {},
+    listeners: {},
     value: initialValue,
   }
 
-  var updateLaces = function(value) {
-    Object.keys(obj.laces).map(function(id) {
-      obj.laces[id](value)
-    })
-  }
-
-  var updateCalls = function(args) {
-    Object.keys(obj.calls).map(function(id) {
-      obj.calls[id].apply(null, args)
+  var updateListeners = function(value) {
+    Object.keys(obj.listeners).map(function(id) {
+      obj.listeners[id](value)
     })
   }
 
   obj.set = function(value) {
     obj.value = value
-    updateLaces(value)
-  }
-  obj.lace = function(func) {
-    var id = newId()
-    obj.laces[id] = func
-    func(obj.value)
-    return {stop: function() {
-      delete obj.laces[id]
-    }}
-  }
-
-  obj.call = function() {
-    updateCalls(arguments)
+    updateListeners(value)
   }
   obj.on = function(func) {
     var id = newId()
-    obj.calls[id] = func
+    obj.listeners[id] = func
     return {stop: function() {
-      delete obj.calls[id]
+      delete obj.listeners[id]
     }}
   }
 
   return obj
 }
 
-var StitchMixin = {
+var ListenerMixin = {
   componentWillMount: function() {
-    this.stitches = []
+    this.listeners = []
   },
-  stitch: function(handle) {
-    this.stitches.push(handle)
+  addListener: function(handle) {
+    this.listeners.push(handle)
+  },
+  stopListeners: function() {
+    this.listeners.map(({stop}) => {stop()})
+    this.listeners = []
   },
   componentWillUnmount: function() {
-    this.stitches.map(({stop}) => {stop()})
+    this.stopListeners()
   }
 }
 
 this.createStitch = createStitch;
-this.StitchMixin = StitchMixin;
+this.ListenerMixin = ListenerMixin;

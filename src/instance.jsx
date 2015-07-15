@@ -1,21 +1,3 @@
-// - componentWillMount
-//   - instanceWillMount
-// - componentDidMount
-//   - instanceDidMount
-// - componentWillUnmount
-//   - instanceWillUnmount
-
-
-
-
-// - getInitialInstanceState(props)
-// - saveInstance(function(save) { save(this.state, function() { /* update UI */})})
-// - instanceWillUpdate(props, state)
-// - instanceDidUpdate()
-
-
-
-
 // An "instance" can be used to save a React component's state
 // between renders so long as you pass the same instance prop.
 
@@ -27,27 +9,6 @@
 //   function using saveInstance. Then you can react to the new state
 //   before the next render.
 
-var noop = (function(){})
-
-function createInstance() {
-  var obj = {
-    canRestore: false,
-    onWillMount: null,
-    onDidMount: null,
-  }
-  obj.save = function(f1=noop, f2=noop) {
-    obj.onWillMount = f1
-    obj.onDidMount = f2
-    obj.canRestore = true
-  }
-  obj.restoreWillMount = function(context) {
-    obj.onWillMount && obj.onWillMount(context);
-  }
-  obj.restoreDidMount = function(context) {
-    obj.onDidMount && obj.onDidMount(context);
-  }
-  return obj
-}
 
 // this.saveInstance is a function wrapper used to override the defaultSave
 // which only saves the state. It would be reasonable to use
@@ -60,6 +21,16 @@ function createInstance() {
 // that has a different instance. Thus, we can't rely only on componentWillMount
 // and componentWillUnmount hooks.
 
+
+
+
+
+
+
+
+
+
+
 var debug = function() {
   console.log.apply(console, [
     "Instance",
@@ -69,121 +40,85 @@ var debug = function() {
 }
 //var debug = (()=>{})
 
+var noop = (function(){})
+
+// API
+// - save(stateObj, (context) -> null)
+// - restoreState(context)
+// - restoreUI(context)
+function createInstance() {
+  var obj = {
+    state: null,
+    ui: null,
+  }
+  obj.save = function(state, ui) {
+    obj.state = state
+    obj.ui = ui || noop
+  }
+  obj.restoreState = function(context, done=noop) {
+    if (obj.state) {
+      context.setState(obj.state, done)
+    }
+  }
+  obj.restoreUI = function(context) {
+    obj.ui && obj.ui(context);
+  }
+  return obj
+}
+
+// API:
+// - getInitialInstanceState(props)
+// - saveUI: -> (context) -> null
+// - instanceWillUpdate(props, state)
+// - instanceDidUpdate()
+
 var InstanceMixin = {
   propTypes: {
     instance: React.PropTypes.object.isRequired
   },
-  defaultSave: function(f) {
-    // save the state by default
-    var state = this.state
-    f(function(ctx) {
-      ctx.setState(state)
-    })
-  },
-  save: function(instance) {
-    debug.call(this, 'save')
-    var f = instance.save
-    // call override if it exists
-    this.saveInstance ? this.saveInstance(f) : this.defaultSave(f)
-  },
-  restoreWillMount: function(instance) {
-    if (instance.canRestore) {
-      debug.call(this, 'restoreWillMount')
-      instance.restoreWillMount(this)
-    }
-  },
-  restoreDidMount: function(instance) {
-    if (instance.canRestore) {
-      debug.call(this, 'restoreDidMount')
-      instance.restoreDidMount(this)
-    }
-  },
-  initialState: function(instance, props) {
-    if (instance.canRestore) {
-      return {}
-    } else {
-      debug.call(this, 'getInitialInstance')
-      return (this.getInitialInstance && this.getInitialInstance(props)) || {}
-    }
-  },
   getInitialState: function() {
-    return this.initialState(this.props.instance, this.props)
-  },
-  defineHook: function(name) {
-    var hooks = []
-    this[name + 'Hooks'] = hooks
-    this[name + 'Hook'] = (f) => { hooks.push(f) }
-  },
-  callHook: function(name, args...) {
-    debug.call(this, name)
-    this[name + 'Hooks'].map(function(f){ f.apply(this, args)})
-    this[name] && this[name]()
-  },
-  componentWillMount: function() {
-    this.defineHook('instanceWillMount')
-    this.defineHook('instanceDidMount')
-    this.defineHook('instanceWillUnmount')
-
-    // stitch instance mixin
-    this.instanceWillMountHook((this.props) => {
-      this.stitches = []
-    })
-    this.instanceWillUnmountHook(() => {
-      this.stitches.map(({stop}) => {stop()})
-    })
-    this.stitch = (handle) => {
-      this.stitches.push(handle)
+    // the state should be there in componentWillMount
+    if (this.props.instance.state) {
+      return this.props.instance.state
+    } else {
+      return getInitialInstanceState(this.props)
     }
-
-    debug.call(this, 'componentWillMount')
-    // the callback wont fire here because its before render!
-    this.restoreWillMount(this.props.instance)
-    this.callHook('instanceWillMount')
-
   },
   componentDidMount: function() {
-    debug.call(this, 'componentDidMount')
-    this.restoreDidMount(this.props.instance)
-    this.callHook('instanceDidMount')
+    this.props.instance.restoreUI()
   },
-  componentWillUnmount: function() {
-    debug.call(this, 'componentWillUnmount')
-    this.save(this.props.instance)
-    this.callHook('instanceWillUnmount')
-  },
-  componentWillReceiveProps: function(newProps) {
-    if (newProps.instance != this.props.instance) {
-      debug.call(this, 'new instance')
-      this.save(this.props.instance)
-      this.callHook('instanceWillUnmount')
-
-      this.replaceState(this.initialState(newProps.instance, newProps))
-      this.restoreWillMount(newProps.instance)
-      this.callHook('instanceWillMount')
+  componentWillReceiveProps: function(nextProps) {
+    var {nextInstance} = nextProps
+    if (nextInstance != this.props.instance) {
+      // save the current instance
+      this.props.instance.save(this.state, this.saveUI())
+      // get the new instance's state
+      var nextState = nextInstance.state ? nextInstance.state : getInitialInstanceState(nextProps)
+      this.replaceState(nextState)
+      // call the API hook
+      this.instanceWillUpdate && this.instanceWillUpdate(nextProps, nextState)
     }
   },
   componentDidUpdate: function(prevProps, prevState) {
     if (prevProps.instance != this.props.instance) {
-      this.restoreDidMount(this.props.instance)
-      this.callHook('instanceDidMount')
+      this.props.instance.restoreUI()
+      // call the API hook
+      this.instanceDidUpdate && this.instanceDidUpdate()
     }
+  },
+  componentWillUnmount: function() {
+    this.props.instance.save(this.state, this.saveUI())
   },
 }
 
 var SaveScrollTopMixin = {
-  saveInstance: function(save) {
-    var state = this.state
+  saveUI: function() {
     var scrollTop = this.getDOMNode().scrollTop
-    debug.call(this, "save scroll top", scrollTop)
-    save(function(ctx) {
-      ctx.setState(state)
-    }, function(ctx) {
-      debug.call(ctx, "restore scroll top", scrollTop)
+    return function(ctx) {
       ctx.getDOMNode().scrollTop = scrollTop
-    })
+    }
   },
 }
-
 
 this.createInstance = createInstance;
 this.InstanceMixin = InstanceMixin;
