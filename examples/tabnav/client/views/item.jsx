@@ -11,8 +11,14 @@ Item = React.createClass({
     kind: React.PropTypes.string.isRequired,
     id: React.PropTypes.number.isRequired,
   },
-  instanceWillMount: function() {
-    this.props.setTitle(`${this.props.kind}[${this.props.id}]`)
+  setTitle: function(props) {
+    props.setTitle(`${props.kind}[${props.id}]`)
+  },
+  componentWillMount: function() {
+    this.setTitle(this.props)
+  },
+  instanceWillUpdate: function(props, state) {
+    this.setTitle(props)
   },
   render: function() {
     var src = feeds[this.props.kind][this.props.id]

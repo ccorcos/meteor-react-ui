@@ -26,14 +26,14 @@ var TabVC = React.createClass({
     ListenerMixin
   ],
   propTypes: {
-    currentTabStitch: React.PropTypes.obj.isRequired,
+    currentTabStitch: React.PropTypes.object.isRequired,
     renderTab: React.PropTypes.func.isRequired,
   },
   getInitialInstanceState: function(props) {
     var route = props.currentTabStitch.value
-    var state = {currentTab: route}
+    var state = {currentTab: route, tabs: {}}
     if (route.tab) {
-      state[route.tab] = props.renderTab(clone(route))
+      state.tabs = {[route.tab]: props.renderTab(clone(route))}
     }
     return state
   },
@@ -48,7 +48,7 @@ var TabVC = React.createClass({
         this.setState(update)
       }
     }))
-  }
+  },
   componentWillMount: function() {
     this.startListeners(this.props)
   },
@@ -57,7 +57,7 @@ var TabVC = React.createClass({
     this.startListeners(props)
   },
   render: function() {
-    debug("render", this.state.currentTab)
+    debug("render", this.state)
     if (this.state.currentTab.tab == null) {
       return this.props.renderTab(clone(this.state.currentTab))
     } else {

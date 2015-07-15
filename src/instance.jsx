@@ -81,19 +81,26 @@ var InstanceMixin = {
     if (this.props.instance.state) {
       return this.props.instance.state
     } else {
-      return getInitialInstanceState(this.props)
+      return (this.getInitialInstanceState
+        ? this.getInitialInstanceState(this.props)
+        : {})
     }
   },
   componentDidMount: function() {
-    this.props.instance.restoreUI()
+    this.props.instance.restoreUI(this)
   },
   componentWillReceiveProps: function(nextProps) {
-    var {nextInstance} = nextProps
+    console.log(nextProps)
+    var nextInstance = nextProps.instance
     if (nextInstance != this.props.instance) {
       // save the current instance
-      this.props.instance.save(this.state, this.saveUI())
+      this.props.instance.save(this.state, this.saveUI && this.saveUI())
       // get the new instance's state
-      var nextState = nextInstance.state ? nextInstance.state : getInitialInstanceState(nextProps)
+      var nextState = (nextInstance.state
+        ? nextInstance.state
+        : (this.getInitialInstanceState
+          ? this.getInitialInstanceState(nextProps)
+          : {}))
       this.replaceState(nextState)
       // call the API hook
       this.instanceWillUpdate && this.instanceWillUpdate(nextProps, nextState)
@@ -101,13 +108,13 @@ var InstanceMixin = {
   },
   componentDidUpdate: function(prevProps, prevState) {
     if (prevProps.instance != this.props.instance) {
-      this.props.instance.restoreUI()
+      this.props.instance.restoreUI(this)
       // call the API hook
       this.instanceDidUpdate && this.instanceDidUpdate()
     }
   },
   componentWillUnmount: function() {
-    this.props.instance.save(this.state, this.saveUI())
+    this.props.instance.save(this.state, this.saveUI && this.saveUI())
   },
 }
 

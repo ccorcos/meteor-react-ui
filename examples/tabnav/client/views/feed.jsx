@@ -33,16 +33,21 @@ Feed = React.createClass({
     path: React.PropTypes.string.isRequired,
     push: React.PropTypes.func.isRequired,
     setTitle: React.PropTypes.func.isRequired,
-    push: React.PropTypes.func.isRequired,
   },
   fetch: function(n, kind) {
     return feeds[kind].slice(0,n)
   },
-  getInitialInstance: function(props) {
+  getInitialInstanceState: function(props) {
     return {limit: 1, imgs: this.fetch(1, props.kind)}
   },
-  instanceWillMount: function() {
-    this.props.setTitle((this.props.kind == 'foxes' ? 'Fox' : 'Whale') + ' Feed')
+  setTitle: function(props) {
+    props.setTitle((props.kind == 'foxes' ? 'Fox' : 'Whale') + ' Feed')
+  },
+  componentWillMount: function() {
+    this.setTitle(this.props)
+  },
+  instanceWillUpdate: function(props, state) {
+    this.setTitle(props)
   },
   loadMore: function() {
     this.setState({

@@ -17,10 +17,10 @@ var NavVC = React.createClass({
   propTypes: {
     initialScene: React.PropTypes.object.isRequired,
     renderScene: React.PropTypes.func.isRequired,
-    onPush: React.PropTypes.func.isRequired,
-    onPop: React.PropTypes.func.isRequired,
+    onPush: React.PropTypes.func,
+    onPop: React.PropTypes.func,
     onPopFront: React.PropTypes.func,
-    setCanPop: React.PropTypes.func.isRequired,
+    setBack: React.PropTypes.func,
     transitionNames: React.PropTypes.object,
     className: React.PropTypes.string
   },
@@ -46,7 +46,7 @@ var NavVC = React.createClass({
       stack: nextStack,
       animation: this.getTransitionName('push')
     })
-    this.props.setCanPop(stack.length > 1)
+    this.props.setBack(nextStack.length > 1 ? this.pop : null)
   },
   pop: function() {
     debug("pop")
@@ -60,7 +60,7 @@ var NavVC = React.createClass({
         stack: nextStack,
         animation:  this.getTransitionName('pop')
       })
-      this.props.setCanPop(stack.length > 1)
+      this.props.setBack(nextStack.length > 1 ? this.pop : null)
     }
   },
   popFront: function() {
@@ -68,17 +68,17 @@ var NavVC = React.createClass({
     this.setState({stack: [stack[0]]});
   },
   startListeners: function(props) {
-    this.addListener(props.onPush(this.push))
-    this.addListener(props.onPop(this.pop))
+    props.onPush && this.addListener(props.onPush(this.push))
+    props.onPop && this.addListener(props.onPop(this.pop))
     props.onPopFront && this.addListener(props.onPopFront(this.popFront))
-  }
+  },
   componentWillMount: function() {
     this.startListeners(this.props)
   },
   instanceWillUpdate: function(props, state) {
     this.stopListeners()
     this.startListeners(props)
-    this.props.setCanPop(state.stack.length > 1)
+    props.setBack(state.stack.length > 1 ? this.pop : null)
   },
   render: function() {
     debug("render")

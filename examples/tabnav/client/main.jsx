@@ -10,11 +10,8 @@ var App = React.createClass({
     this.leftStitch = createStitch(null)
     this.rightStitch = createStitch(null)
     this.currentTabStitch = createStitch({tab:'foxes'})
-
-    var setFeedTab = () =>
-      this.currentTabStitch.set({tab:'foxes'})
-    var setProfileTab = () =>
-      this.currentTabStitch.set({tab:'whales'})
+    var setFeedTab = () => this.currentTabStitch.set({tab:'foxes'})
+    var setProfileTab = () => this.currentTabStitch.set({tab:'whales'})
     this.tabs = [{
       name: 'foxes',
       component: <div onClick={setFeedTab}>FOX</div>
@@ -23,6 +20,16 @@ var App = React.createClass({
       component: <div onClick={setProfileTab}>WHALE</div>
     }]
     this.tabVCInstance = createInstance()
+
+    // stitch the back button up
+    this.backStitch = createStitch(null)
+    this.backStitch.on((pop) => {
+      if (pop) {
+        this.leftStitch.set(<div onClick={pop}>{"<"}</div>)
+      } else {
+        this.leftStitch.set(null)
+      }
+    })
   },
 
   renderTab: function(route) {
@@ -30,22 +37,11 @@ var App = React.createClass({
 
     // for each tab, we need to stitch it into the Layout
     var pushStitch = createStitch()
-    var popStitch = createStitch()
-    var canPopStitch = createStitch(false)
-
-    // stitch the back button up
-    canPopStitch.lace((canPop) => {
-      if (canPop) {
-        this.leftStitch.set(<div onClick={popStitch.call}>{"<"}</div>)
-      } else {
-        this.leftStitch.set(null)
-      }
-    })
 
     var renderScene = (route) => {
       var props = {
         setTitle: this.titleStitch.set,
-        push: pushStitch.call,
+        push: pushStitch.set,
         path: route.path,
       }
 
@@ -73,8 +69,7 @@ var App = React.createClass({
       initialScene: route,
       renderScene: renderScene,
       onPush: pushStitch.on,
-      onPop: popStitch.on,
-      setCanPop: canPopStitch.set,
+      setBack: this.backStitch.set
     }
 
     if (tab == "foxes") {
@@ -89,13 +84,13 @@ var App = React.createClass({
   render: function() {
     return (
       <Layout
-        laceTitle={this.titleStitch.lace}
-        laceCurrentTab={this.currentTabStitch.lace}
+        titleStitch={this.titleStitch}
+        currentTabStitch={this.currentTabStitch}
         tabs={this.tabs}
-        laceLeftComponent={this.leftStitch.lace}
-        laceRightComponent={this.rightStitch.lace}>
+        leftComponentStitch={this.leftStitch}
+        rightComponentStitch={this.rightStitch}>
         <TabVC
-          laceCurrentTab={this.currentTabStitch.lace}
+          currentTabStitch={this.currentTabStitch}
           renderTab={this.renderTab}
           instance={this.tabVCInstance}/>
     </Layout>

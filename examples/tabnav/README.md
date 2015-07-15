@@ -1,8 +1,5 @@
 # To Do
 
-- in willMount hooks, we must be able to trust that new props will be there.
-  - we'll have to pass props as an argument...
-
 
 - examples:
   - tabnav fox/whale

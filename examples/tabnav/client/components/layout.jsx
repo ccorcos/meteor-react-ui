@@ -99,13 +99,24 @@ RightGutterLarge = React.createClass({
 
 Layout = React.createClass({
   displayName: 'Layout',
-  mixins: [React.addons.PureRenderMixin],
+  mixins: [
+    React.addons.PureRenderMixin,
+    ListenerMixin
+  ],
   propTypes: {
-    laceTitle: React.PropTypes.func.isRequired,
-    laceCurrentTab: React.PropTypes.func.isRequired,
+    titleStitch: React.PropTypes.object.isRequired,
+    currentTabStitch: React.PropTypes.object.isRequired,
     tabs: React.PropTypes.array.isRequired,
-    laceLeftComponent: React.PropTypes.func,
-    laceRightComponent: React.PropTypes.func,
+    leftComponentStitch: React.PropTypes.object,
+    rightComponentStitch: React.PropTypes.object,
+  },
+  getInitialState: function() {
+    return {
+      title: this.props.titleStitch.value,
+      currentTab: this.props.currentTabStitch.value.tab,
+      leftComponent: this.props.leftComponentStitch.value,
+      rightComponent: this.props.rightComponentStitch.value
+    }
   },
   set: function(name) {
     return (value) => {
@@ -113,15 +124,16 @@ Layout = React.createClass({
     }
   },
   componentWillMount: function() {
-    this.props.laceLeftComponent(this.set('leftComponent'))
-    this.props.laceRightComponent(this.set('rightComponent'))
-    this.props.laceTitle(this.set('title'))
-    this.props.laceCurrentTab(({tab}) => {
+    this.addListener(this.props.leftComponentStitch.on(this.set('leftComponent')))
+    this.addListener(this.props.rightComponentStitch.on(this.set('rightComponent')))
+    this.addListener(this.props.titleStitch.on(this.set('title')))
+    this.addListener(this.props.currentTabStitch.on(({tab}) => {
       this.setState({currentTab:tab})
-    })
+    }))
   },
+
   render: function() {
-    console.log("render Layout")
+    console.log("Layout : render")
     return (
       <div className="layout">
         <NavBarSmall title={this.state.title} left={this.state.leftComponent} right={this.state.rightComponent}/>
