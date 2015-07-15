@@ -21,6 +21,8 @@
 // that has a different instance. Thus, we can't rely only on componentWillMount
 // and componentWillUnmount hooks.
 
+
+
 var debug = function() {
   console.log.apply(console, [
     "Instance",
@@ -59,8 +61,6 @@ function createInstance() {
 // API:
 // - getInitialInstanceState(props)
 // - saveUI: -> (context) -> null
-// - instanceWillUpdate(props, state)
-// - instanceDidUpdate()
 
 var InstanceMixin = {
   propTypes: {
@@ -78,29 +78,6 @@ var InstanceMixin = {
   },
   componentDidMount: function() {
     this.props.instance.restoreUI(this)
-  },
-  componentWillReceiveProps: function(nextProps) {
-    var nextInstance = nextProps.instance
-    if (nextInstance != this.props.instance) {
-      // save the current instance
-      this.props.instance.save(this.state, this.saveUI && this.saveUI())
-      // get the new instance's state
-      var nextState = (nextInstance.state
-        ? nextInstance.state
-        : (this.getInitialInstanceState
-          ? this.getInitialInstanceState(nextProps)
-          : {}))
-      this.replaceState(nextState)
-      // call the API hook
-      this.instanceWillUpdate && this.instanceWillUpdate(nextProps, nextState)
-    }
-  },
-  componentDidUpdate: function(prevProps, prevState) {
-    if (prevProps.instance != this.props.instance) {
-      this.props.instance.restoreUI(this)
-      // call the API hook
-      this.instanceDidUpdate && this.instanceDidUpdate()
-    }
   },
   componentWillUnmount: function() {
     this.props.instance.save(this.state, this.saveUI && this.saveUI())

@@ -76,12 +76,12 @@ App = React.createClass({
     }
 
     if (tab == "foxes") {
-      return <NavVC key="foxes-tab"className={''} {...props}/>
+      return <NavVC key="nav-foxes" {...props}/>
     } else if (tab == "whales") {
-      return <NavVC key="whales-tab"className={''} {...props}/>
+      return <NavVC key="nav-whales" {...props}/>
     } else {
       if (route.name == "/foxes/:id" || route.name == "/whales/:id") {
-        return <NavVC key="null" className={''} {...props}/>
+        return <NavVC key="nav-other" {...props}/>
       } else {
         return <NotFound path={route.path}/>
       }
@@ -96,6 +96,7 @@ App = React.createClass({
         leftComponentStitch={this.leftStitch}
         rightComponentStitch={this.rightStitch}>
         <TabVC
+          key="tabVC"
           currentTabStitch={this.currentTabStitch}
           renderTab={this.renderTab}
           instance={this.tabVCInstance}/>

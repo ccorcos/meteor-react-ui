@@ -1,10 +1,10 @@
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-// var debug = function() {
-//   console.log.apply(console, [
-//     "NavVC :",
-//   ].concat(Array.prototype.slice.call(arguments)))
-// }
+var debug = function() {
+  console.log.apply(console, [
+    "NavVC :",
+  ].concat(Array.prototype.slice.call(arguments)))
+}
 
 var debug = (()=>{})
 
@@ -31,7 +31,6 @@ var NavVC = React.createClass({
     debug("getInitialInstance", props.initialScene)
     return {
       stack: [props.renderScene(clone(props.initialScene))],
-      animation: this.getTransitionName('appear')
     }
   },
   push: function(route) {
@@ -63,25 +62,23 @@ var NavVC = React.createClass({
     debug("popFront")
     this.setState({stack: [stack[0]]});
   },
-  startListeners: function(props) {
-    props.onPush && this.addListener(props.onPush(this.push))
-    props.onPop && this.addListener(props.onPop(this.pop))
-    props.onPopFront && this.addListener(props.onPopFront(this.popFront))
-  },
   componentWillMount: function() {
-    this.startListeners(this.props)
-  },
-  instanceWillUpdate: function(props, state) {
-    this.stopListeners()
-    this.startListeners(props)
-    props.setBack(state.stack.length > 1 ? this.pop : null)
-    this.setState({animation: this.getTransitionName('instance')})
+    debug("mount")
+    // start listeners
+    this.props.onPush && this.addListener(this.props.onPush(this.push))
+    this.props.onPop && this.addListener(this.props.onPop(this.pop))
+    this.props.onPopFront && this.addListener(this.props.onPopFront(this.popFront))
+    this.setState({animation: this.getTransitionName('appear')})
+    this.props.setBack(this.state.stack.length > 1 ? this.pop : null)
   },
   render: function() {
     debug("render", this.state.animation)
     var last = this.state.stack.length - 1;
     return (
-      <ReactCSSTransitionGroup transitionAppear={true} className={'navvc-transition-group ' + this.props.className + ' ' + this.state.animation} transitionName={this.state.animation}>
+      <ReactCSSTransitionGroup
+        transitionAppear={true}
+        className={`navvc-transition-group ${this.props.className}`}
+        transitionName={this.state.animation}>
         {this.state.stack[last]}
       </ReactCSSTransitionGroup>
     );

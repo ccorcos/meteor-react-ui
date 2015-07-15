@@ -1,9 +1,9 @@
 
-// var debug = function() {
-//   console.log.apply(console, [
-//     "TabVC :",
-//   ].concat(Array.prototype.slice.call(arguments)))
-// }
+var debug = function() {
+  console.log.apply(console, [
+    "TabVC :",
+  ].concat(Array.prototype.slice.call(arguments)))
+}
 
 var debug = (()=>{})
 
@@ -38,8 +38,8 @@ var TabVC = React.createClass({
     }
     return state
   },
-  startListeners: function(props) {
-    this.addListener(props.currentTabStitch.on((route) => {
+  componentWillMount: function() {
+    this.addListener(this.props.currentTabStitch.on((route) => {
       if (this.state.currentTab.tab != route.tab) {
         var update = {currentTab: route}
         if (route.tab && !this.state.tabs[route.tab]) {
@@ -49,13 +49,6 @@ var TabVC = React.createClass({
         this.setState(update)
       }
     }))
-  },
-  componentWillMount: function() {
-    this.startListeners(this.props)
-  },
-  instanceWillUpdate: function(props, state) {
-    this.stopListeners()
-    this.startListeners(props)
   },
   render: function() {
     debug("render", this.state)
