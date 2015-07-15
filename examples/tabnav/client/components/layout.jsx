@@ -136,15 +136,15 @@ Layout = React.createClass({
   },
   componentWillMount: function() {
     this.listeners = []
-    this.listeners.push(this.props.leftComponentStitch.on(this.set('leftComponent')))
-    this.listeners.push(this.props.rightComponentStitch.on(this.set('rightComponent')))
-    this.listeners.push(this.props.titleStitch.on(this.set('title')))
-    this.listeners.push(this.props.tabRouteStitch.on(({tab}) => {
+    this.listeners.push(this.props.leftComponentStitch.listen(this.set('leftComponent')))
+    this.listeners.push(this.props.rightComponentStitch.listen(this.set('rightComponent')))
+    this.listeners.push(this.props.titleStitch.listen(this.set('title')))
+    this.listeners.push(this.props.tabRouteStitch.listen(({tab}) => {
       this.setState({currentTab:tab})
     }))
   },
   componentWillUnmount: function() {
-    this.listeners.map((f) => {f()})
+    this.listeners.map(({stop}) => {stop()})
   },
   render: function() {
     return (

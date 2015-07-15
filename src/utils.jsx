@@ -1,9 +1,9 @@
 // shallow clone
-clone = function clone(obj) {
+this.clone = function clone(obj) {
   return React.addons.update(obj, {})
 }
 
-createDebouncer = function createDebouncer(ms) {
+this.createDebouncer = function createDebouncer(ms) {
   var busy = false;
   return function(f) {
     return function() {

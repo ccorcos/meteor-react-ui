@@ -6,7 +6,7 @@ function counter() {
   }
 }
 
-function createStitch(initialValue=null) {
+this.createStitch = function createStitch(initialValue=null) {
   // each subscriber is assigned an id
   var newId = counter()
 

@@ -1,4 +1,4 @@
-TabVC = React.createClass({
+this.TabVC = React.createClass({
   displayName: 'TabVC',
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
@@ -48,7 +48,7 @@ TabVC = React.createClass({
     this.props.instance.state = this.state
   },
   render: function() {
-    this.props.renderTab(
+    return this.props.renderTab(
       this.state.currentTabRoute,
       this.state.tabInstances[this.state.currentTabRoute.tab]
     )

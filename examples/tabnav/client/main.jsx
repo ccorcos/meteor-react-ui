@@ -1,6 +1,7 @@
 
 
 function renderApp(initialRoute, instance) {
+  // console.log("render app", initialRoute, instance)
 
   // these are some global app layout stitches
   var titleStitch = createStitch('')
@@ -9,12 +10,16 @@ function renderApp(initialRoute, instance) {
   var tabRouteStitch = createStitch(initialRoute)
 
   function renderTab(tabRoute, tabInstance) {
+    // console.log("render tab", tabRoute, tabInstance)
+
 
     // every tab has a navigation controller, so we need to wire it up
     // with all of its scene.
     var pushStitch = createStitch(null)
 
     function renderScene(sceneRoute, sceneInstance) {
+      // console.log("render scene", sceneRoute, sceneInstance)
+
       var {name, path} = sceneRoute
 
       var props = {
@@ -30,9 +35,9 @@ function renderApp(initialRoute, instance) {
       } else if (name == '/whales') {
         return <Feed kind="whales" {...props}/>
       } else if (name == "/foxes/:id") {
-        return <Item kind="foxes" id={Number(tabRoute.params.id)} {...props}/>;
+        return <Item kind="foxes" id={Number(sceneRoute.params.id)} {...props}/>;
       } else if (name == "/whales/:id") {
-        return <Item kind="whales" id={Number(tabRoute.params.id)} {...props}/>;
+        return <Item kind="whales" id={Number(sceneRoute.params.id)} {...props}/>;
       } else {
         return <NotFound key={path} path={path}/>;
       }
@@ -46,6 +51,8 @@ function renderApp(initialRoute, instance) {
       }
     }
 
+    var {tab, name, path} = tabRoute
+
     var props = {
       renderScene: renderScene,
       listenPush: pushStitch.listen,
@@ -53,21 +60,21 @@ function renderApp(initialRoute, instance) {
       instance: tabInstance
     }
 
-    if (tabRoute.tab == "foxes") {
-      <NavVC key="nav-foxes" initialScene={{tab:'foxes', path:'/', name:'/'}} {...props}/>
-    } else if (tabRoute.tab == "whales") {
-      <NavVC key="nav-whales" initialScene={{tab:'whales', path:'/whales', name:'/whales'}} {...props}/>
-    } else if (tabRoute.tab == "hidden") {
+    if (tab == "foxes") {
+      return <NavVC key="nav-foxes" initialSceneRoute={{tab:'foxes', path:'/', name:'/'}} {...props}/>
+    } else if (tab == "whales") {
+      return <NavVC key="nav-whales" initialSceneRoute={{tab:'whales', path:'/whales', name:'/whales'}} {...props}/>
+    } else if (tab == "hidden") {
       if (name == "/foxes/:id" || name == "/whales/:id") {
-        return <NavVC key="nav-hidden" initialScene={tabRoute} {...props}/>
+        return <NavVC key="nav-hidden" initialSceneRoute={tabRoute} {...props}/>
       } else {
-        return <NotFound path={route.path}/>
+        return <NotFound path={path}/>
       }
     }
-  },
+  }
 
-  var setFeedTab = () => currentTabStitch.set({tab:'foxes'})
-  var setProfileTab = () => currentTabStitch.set({tab:'whales'})
+  var setFeedTab = () => tabRouteStitch.set({tab:'foxes'})
+  var setProfileTab = () => tabRouteStitch.set({tab:'whales'})
   var tabButtons = [{
     name: 'foxes',
     component: <div onClick={debounce(setFeedTab)}>FOX</div>
@@ -81,8 +88,8 @@ function renderApp(initialRoute, instance) {
       titleStitch={titleStitch}
       tabRouteStitch={tabRouteStitch}
       leftComponentStitch={leftStitch}
-      rightComponentStitch={rightStitch}>
-      tabButtons={tabButtons}
+      rightComponentStitch={rightStitch}
+      tabButtons={tabButtons}>
       <TabVC
         key="tab-vc"
         tabRouteStitch={tabRouteStitch}
@@ -101,13 +108,19 @@ App = React.createClass({
   propTypes: {
     initialRoute: React.PropTypes.object.isRequired
   },
-  componentDidMount: function() {
+  save: function() {
+    Session.set('instance', this.instance)
+  },
+  componentWillMount: function() {
     this.instance = Session.get('instance')
   },
   componentWillUnmount: function() {
-    Session.set('instance', this.instance)
+    window.setTimeout(() => {
+      console.log("app save")
+      Session.set('instance', this.instance)
+    }, 0)
   },
   render: function() {
-    renderApp(this.props.initialRoute, this.instance)
+    return renderApp(this.props.initialRoute, this.instance)
   }
 });
