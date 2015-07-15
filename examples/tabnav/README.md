@@ -1,10 +1,6 @@
 # To Do
 
-- don't forget routing!
 - comment it up!
-
-
-
 
 - then lets think about how to use any-db with this
   - publish unordered collections

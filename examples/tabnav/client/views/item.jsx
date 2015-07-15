@@ -16,9 +16,11 @@ Item = React.createClass({
   },
   componentWillMount: function() {
     this.setTitle(this.props)
+    Router.go(this.props.path)
   },
   instanceWillUpdate: function(props, state) {
     this.setTitle(props)
+    Router.go(props.path)
   },
   render: function() {
     var src = feeds[this.props.kind][this.props.id]

@@ -16,7 +16,7 @@ NavBarSmall = React.createClass({
     return (
       <div className="navbar small">
         <div className="left">
-          <ReactCSSTransitionGroup className="full-size" transitionName="fade">
+          <ReactCSSTransitionGroup className="full-size" transitionName="scale">
             {this.props.left || false}
           </ReactCSSTransitionGroup>
         </div>
@@ -26,7 +26,7 @@ NavBarSmall = React.createClass({
           </ReactCSSTransitionGroup>
         </div>
         <div className="right">
-          <ReactCSSTransitionGroup className="full-size" transitionName="fade">
+          <ReactCSSTransitionGroup className="full-size" transitionName="scale">
             {this.props.right || false}
           </ReactCSSTransitionGroup>
         </div>

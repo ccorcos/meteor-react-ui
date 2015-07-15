@@ -26,7 +26,7 @@ Feed = React.createClass({
   mixins: [
     React.addons.PureRenderMixin,
     InstanceMixin,
-    SaveScrollTopMixin
+    SaveScrollTopMixin,
   ],
   propTypes: {
     kind: React.PropTypes.string.isRequired,
@@ -45,9 +45,11 @@ Feed = React.createClass({
   },
   componentWillMount: function() {
     this.setTitle(this.props)
+    Router.go(this.props.path)
   },
   instanceWillUpdate: function(props, state) {
     this.setTitle(props)
+    Router.go(props.path)
   },
   loadMore: function() {
     this.setState({

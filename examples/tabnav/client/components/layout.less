@@ -177,19 +177,31 @@
 .fade-enter {
   opacity: 0;
 }
-
 .fade-enter.fade-enter-active {
   transition: opacity .5s ease;
   opacity: 1;
 }
-
 .fade-leave {
   opacity: 1;
 }
-
 .fade-leave.fade-leave-active {
   transition: opacity .5s ease;
   opacity: 0;
+}
+
+.scale-enter {
+  transform: scale3d(0.01, 0.01, 0.01);
+}
+.scale-enter.scale-enter-active {
+  transition: transform .2s ease-out;
+  transform: scale3d(1, 1, 1);
+}
+.scale-leave {
+  transform: scale3d(1, 1, 1);
+}
+.scale-leave.scale-leave-active {
+  transition: transform .2s ease-out;
+  transform: scale3d(0.01, 0.01, 0.01);
 }
 
 // To visualize the layout, you can uncomment the background colors:
