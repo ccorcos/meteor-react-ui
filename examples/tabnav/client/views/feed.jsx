@@ -23,12 +23,9 @@ feeds = {foxes, whales}
 
 Feed = React.createClass({
   displayName: 'Feed',
-  mixins: [
-    React.addons.PureRenderMixin,
-    InstanceMixin,
-    SaveScrollTopMixin,
-  ],
+  mixins: [React.addons.PureRenderMixin],
   propTypes: {
+    instance: React.PropTypes.object.isRequired,
     kind: React.PropTypes.string.isRequired,
     path: React.PropTypes.string.isRequired,
     push: React.PropTypes.func.isRequired,
@@ -37,19 +34,25 @@ Feed = React.createClass({
   fetch: function(n, kind) {
     return feeds[kind].slice(0,n)
   },
-  getInitialInstanceState: function(props) {
-    return {limit: 1, imgs: this.fetch(1, props.kind)}
-  },
-  setTitle: function(props) {
-    props.setTitle((props.kind == 'foxes' ? 'Fox' : 'Whale') + ' Feed')
+  getInitialState: function() {
+    if (this.props.instance.state) {
+      return this.props.instance.state
+    } else {
+      return {limit: 1, imgs: this.fetch(1, this.props.kind)}
+    }
   },
   componentWillMount: function() {
-    this.setTitle(this.props)
+    this.props.setTitle((this.props.kind == 'foxes' ? 'Fox' : 'Whale') + ' Feed')
     Router.go(this.props.path)
   },
-  instanceWillUpdate: function(props, state) {
-    this.setTitle(props)
-    Router.go(props.path)
+  componentDidMount: function() {
+    if (this.props.instance.scrollTop) {
+      this.getDOMNode().scrollTop = this.props.instance.scrollTop
+    }
+  },
+  componentWillUnmount: function() {
+    this.props.instance.state = this.state
+    this.props.instance.scrollTop = this.getDOMNode().scrollTop
   },
   loadMore: function() {
     this.setState({

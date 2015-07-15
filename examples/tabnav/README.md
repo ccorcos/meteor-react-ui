@@ -8,6 +8,32 @@
   - client side subscription cache
 
 
+  // A simple component that saves its instance
+  var Comp = React.createClass({
+    displayName: 'Comp',
+    mixins: [React.addons.PureRenderMixin],
+    propTypes: {
+      instance: React.PropTypes.object.isRequired
+    }
+    getInitialState: function() {
+      return this.props.instance.state || {}
+    }
+    componentDidMount: function() {
+      this.getDOMNode().scrollTop = this.props.instance.scrollTop || 0
+    }
+    componentWillUnmount: function() {
+      this.props.instance.state = this.state
+      this.props.instance.scrollTop = this.getDOMNode().scrollTop
+    }
+    render: function() {
+      return (
+        <div />
+      );
+    }
+  });
+
+
+
 // http://codepen.io/ccorcos/pen/jPzNpP
 
 // no animation: http://codepen.io/ccorcos/pen/ZGRWwY

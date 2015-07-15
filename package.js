@@ -20,7 +20,6 @@ Package.onUse(function(api) {
   api.addFiles([
     "src/utils.jsx",
     "src/stitch.jsx",
-    "src/instance.jsx",
     "src/TabVC.jsx",
     "src/NavVC.jsx"
   ]);

@@ -1,50 +1,43 @@
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
-var debug = function() {
-  console.log.apply(console, [
-    "NavVC :",
-  ].concat(Array.prototype.slice.call(arguments)))
-}
-
-var debug = (()=>{})
-
-var NavVC = React.createClass({
+NavVC = React.createClass({
   displayName: 'NavVC',
-  mixins: [
-    React.addons.PureRenderMixin,
-    InstanceMixin,
-    ListenerMixin
-  ],
+  mixins: [React.addons.PureRenderMixin],
   propTypes: {
-    initialScene: React.PropTypes.object.isRequired,
+    instance: React.PropTypes.object.isRequired,
+    initialSceneRoute: React.PropTypes.object.isRequired,
     renderScene: React.PropTypes.func.isRequired,
-    onPush: React.PropTypes.func,
-    onPop: React.PropTypes.func,
-    onPopFront: React.PropTypes.func,
-    setBack: React.PropTypes.func,
+    listenPush: React.PropTypes.func.isRequired,
+    setPop: React.PropTypes.func.isRequired,
+    listenPopFont: React.PropTypes.func,
     className: React.PropTypes.string
   },
-  getTransitionName: function(name) {
-    return `navvc-${name}`
-  },
-  getInitialInstanceState: function(props) {
-    debug("getInitialInstance", props.initialScene)
-    return {
-      stack: [props.renderScene(clone(props.initialScene))],
+  getInitialState: function() {
+    if (this.props.instance.state) {
+      return this.props.instance.state
+    } else {
+      return {
+        animation: 'navvc-appear',
+        stack: [{
+          sceneRoute: initialSceneRoute,
+          instance: {}
+        }]
+      }
     }
   },
   push: function(route) {
-    debug("push", route)
     var nextStack = React.addons.update(this.state.stack,
-      {$push:[this.props.renderScene(clone(route))]})
+      {$push:[{
+        sceneRoute: route,
+        instance: {}
+      }]})
     this.setState({
       stack: nextStack,
-      animation: this.getTransitionName('push')
+      animation: 'navvc-push'
     })
-    this.props.setBack(nextStack.length > 1 ? this.pop : null)
+    this.props.setPop(nextStack.length > 1 ? this.pop : null)
   },
   pop: function() {
-    debug("pop")
     if (this.state.stack.length == 1) {
       console.warn("You shouldn't pop off the root view of a NavVC!")
     } else {
@@ -53,36 +46,37 @@ var NavVC = React.createClass({
         {$splice:[[last, 1]]})
       this.setState({
         stack: nextStack,
-        animation:  this.getTransitionName('pop')
+        animation: 'navvc-pop'
       })
-      this.props.setBack(nextStack.length > 1 ? this.pop : null)
+      this.props.setPop(nextStack.length > 1 ? this.pop : null)
     }
   },
   popFront: function() {
-    debug("popFront")
     this.setState({stack: [stack[0]]});
+    this.props.setPop(null)
   },
   componentWillMount: function() {
-    debug("mount")
     // start listeners
-    this.props.onPush && this.addListener(this.props.onPush(this.push))
-    this.props.onPop && this.addListener(this.props.onPop(this.pop))
-    this.props.onPopFront && this.addListener(this.props.onPopFront(this.popFront))
-    this.setState({animation: this.getTransitionName('appear')})
-    this.props.setBack(this.state.stack.length > 1 ? this.pop : null)
+    this.listeners = []
+    this.props.listenPush && this.listeners.push(this.props.listenPush(this.push))
+    this.props.listenPopFont && this.listeners.push(this.props.listenPopFont(this.popFront))
+    this.setState({animation: 'navvc-appear'})
+    this.props.setPop(this.state.stack.length > 1 ? this.pop : null)
+  },
+  componentWillUnmount: function() {
+    this.listeners.map((f) => f())
+    this.props.instance.state = this.state
   },
   render: function() {
-    debug("render", this.state.animation)
     var last = this.state.stack.length - 1;
+    var {sceneRoute, instance} = this.state.stack[last]
     return (
       <ReactCSSTransitionGroup
         transitionAppear={true}
         className={`navvc-transition-group ${this.props.className}`}
         transitionName={this.state.animation}>
-        {this.state.stack[last]}
+        {this.props.renderScene(sceneRoute, instance)}
       </ReactCSSTransitionGroup>
     );
   }
 });
-
-this.NavVC = NavVC;

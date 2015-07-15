@@ -1,106 +1,113 @@
 
-App = React.createClass({
-  displayName: 'App',
-  mixins: [
-    React.addons.PureRenderMixin,
-  ],
-  propTypes: {
-    initialRoute: React.PropTypes.object.isRequired
-  },
-  componentWillMount: function() {
-    this.titleStitch = createStitch('')
-    this.leftStitch = createStitch(null)
-    this.rightStitch = createStitch(null)
-    this.currentTabStitch = createStitch(this.props.initialRoute)
-    var setFeedTab = () => this.currentTabStitch.set({tab:'foxes'})
-    var setProfileTab = () => this.currentTabStitch.set({tab:'whales'})
-    this.tabs = [{
-      name: 'foxes',
-      component: <div onClick={debounce(setFeedTab)}>FOX</div>
-    },{
-      name: 'whales',
-      component: <div onClick={debounce(setProfileTab)}>WHALE</div>
-    }]
-    this.tabVCInstance = createInstance()
 
-    // stitch the back button up
-    this.backStitch = createStitch(null)
-    this.backStitch.on((pop) => {
-      if (pop) {
-        this.leftStitch.set(<div className="back-button" onClick={debounce(pop)}>{"<"}</div>)
-      } else {
-        this.leftStitch.set(null)
-      }
-    })
-  },
+function renderApp(initialRoute, instance) {
 
-  renderTab: function(route) {
-    var tab = route.tab
+  // these are some global app layout stitches
+  var titleStitch = createStitch('')
+  var leftStitch = createStitch()
+  var rightStitch = createStitch()
+  var tabRouteStitch = createStitch(initialRoute)
 
-    // for each tab, we need to stitch it into the Layout
-    var pushStitch = createStitch()
+  function renderTab(tabRoute, tabInstance) {
 
-    var renderScene = (route) => {
+    // every tab has a navigation controller, so we need to wire it up
+    // with all of its scene.
+    var pushStitch = createStitch(null)
+
+    function renderScene(sceneRoute, sceneInstance) {
+      var {name, path} = sceneRoute
+
       var props = {
-        setTitle: this.titleStitch.set,
+        setTitle: titleStitch.set,
         push: pushStitch.set,
-        path: route.path,
+        path: path,
+        key: path, // shouldnt be pushing from on path to the same
+        instance: sceneInstance
       }
 
-      if (route.path == "/" || route.path == "/whales") {
-        return <Feed key={route.path} kind={tab} instance={createInstance()} {...props}/>
-      } else if (route.name == "/foxes/:id") {
-        return <Item key={route.path} kind="foxes" instance={createInstance()} id={Number(route.params.id)} {...props}/>;
-      } else if (route.name == "/whales/:id") {
-        return <Item key={route.path} kind="whales" instance={createInstance()} id={Number(route.params.id)} {...props}/>;
+      if (name == '/') {
+        return <Feed kind="foxes" {...props}/>
+      } else if (name == '/whales') {
+        return <Feed kind="whales" {...props}/>
+      } else if (name == "/foxes/:id") {
+        return <Item kind="foxes" id={Number(tabRoute.params.id)} {...props}/>;
+      } else if (name == "/whales/:id") {
+        return <Item kind="whales" id={Number(tabRoute.params.id)} {...props}/>;
       } else {
-        return <NotFound key={route.path} path={route.path}/>;
+        return <NotFound key={path} path={path}/>;
       }
     }
 
-    // If we're rendering a certain tab, then lets set the
-    // initial scene path.
-    if (tab == 'foxes') {
-      route.path = '/'
-    } else if (tab == 'whales') {
-      route.path = '/whales'
+    function handlePop(pop) {
+      if (pop) {
+        leftStitch.set(<div className="back-button" onClick={debounce(pop)}>{"<"}</div>)
+      } else {
+        leftStitch.set(null)
+      }
     }
 
-    // create an instance for the NavVC
     var props = {
-      instance: createInstance(),
-      initialScene: route,
       renderScene: renderScene,
-      onPush: pushStitch.on,
-      setBack: this.backStitch.set
+      listenPush: pushStitch.listen,
+      setPop: handlePop,
+      instance: tabInstance
     }
 
-    if (tab == "foxes") {
-      return <NavVC key="nav-foxes" {...props}/>
-    } else if (tab == "whales") {
-      return <NavVC key="nav-whales" {...props}/>
-    } else {
-      if (route.name == "/foxes/:id" || route.name == "/whales/:id") {
-        return <NavVC key="nav-other" {...props}/>
+    if (tabRoute.tab == "foxes") {
+      <NavVC key="nav-foxes" initialScene={{tab:'foxes', path:'/', name:'/'}} {...props}/>
+    } else if (tabRoute.tab == "whales") {
+      <NavVC key="nav-whales" initialScene={{tab:'whales', path:'/whales', name:'/whales'}} {...props}/>
+    } else if (tabRoute.tab == "hidden") {
+      if (name == "/foxes/:id" || name == "/whales/:id") {
+        return <NavVC key="nav-hidden" initialScene={tabRoute} {...props}/>
       } else {
         return <NotFound path={route.path}/>
       }
     }
   },
-  render: function() {
-    return (
-      <Layout
-        titleStitch={this.titleStitch}
-        currentTabStitch={this.currentTabStitch}
-        tabs={this.tabs}
-        leftComponentStitch={this.leftStitch}
-        rightComponentStitch={this.rightStitch}>
-        <TabVC
-          key="tabVC"
-          currentTabStitch={this.currentTabStitch}
-          renderTab={this.renderTab}
-          instance={this.tabVCInstance}/>
+
+  var setFeedTab = () => currentTabStitch.set({tab:'foxes'})
+  var setProfileTab = () => currentTabStitch.set({tab:'whales'})
+  var tabButtons = [{
+    name: 'foxes',
+    component: <div onClick={debounce(setFeedTab)}>FOX</div>
+  },{
+    name: 'whales',
+    component: <div onClick={debounce(setProfileTab)}>WHALE</div>
+  }]
+
+  return (
+    <Layout
+      titleStitch={titleStitch}
+      tabRouteStitch={tabRouteStitch}
+      leftComponentStitch={leftStitch}
+      rightComponentStitch={rightStitch}>
+      tabButtons={tabButtons}
+      <TabVC
+        key="tab-vc"
+        tabRouteStitch={tabRouteStitch}
+        renderTab={renderTab}
+        instance={instance}/>
     </Layout>
-    );
+  )
+}
+
+
+Session.setDefault('instance', {})
+
+App = React.createClass({
+  displayName: 'App',
+  mixins: [React.addons.PureRenderMixin],
+  propTypes: {
+    initialRoute: React.PropTypes.object.isRequired
+  },
+  componentDidMount: function() {
+    this.instance = Session.get('instance')
+  },
+  componentWillUnmount: function() {
+    Session.set('instance', this.instance)
+  },
+  render: function() {
+    renderApp(this.props.initialRoute, this.instance)
   }
 });

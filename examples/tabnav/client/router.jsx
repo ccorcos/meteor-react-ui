@@ -29,6 +29,6 @@ function defineRoute(name, initialTab) {
 // cached so we can land directly on a post or a user.
 defineRoute('/', 'foxes');
 defineRoute('/whales', 'whales');
-defineRoute('/foxes/:id', null);
-defineRoute('/whales/:id', null);
-defineRoute('*', null); // Capture the 404 last
+defineRoute('/foxes/:id', "hidden");
+defineRoute('/whales/:id', "hidden");
+defineRoute('*', "hidden"); // Capture the 404 last

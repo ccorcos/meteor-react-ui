@@ -41,11 +41,11 @@ TabBar = React.createClass({
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
     currentTab: React.PropTypes.string,
-    tabs: React.PropTypes.array.isRequired,
+    tabButtons: React.PropTypes.array.isRequired,
     className: React.PropTypes.string
   },
   render: function() {
-    var tabs = this.props.tabs.map(({name, component}) => {
+    var tabs = this.props.tabButtons.map(({name, component}) => {
       var selected = (this.props.currentTab == name ? 'selected' : '')
       return (
         <div className={`tab ${name} ${selected}`} key={`tab-key-${name}`}>
@@ -67,14 +67,14 @@ NavBarLarge = React.createClass({
   propTypes: {
     title: React.PropTypes.string,
     currentTab: React.PropTypes.string,
-    tabs: React.PropTypes.array.isRequired
+    tabButtons: React.PropTypes.array.isRequired
   },
   render: function() {
     return (
       <div className="navbar large">
         <div className="inner-navbar">
           <div className="title">{this.props.title}</div>
-          <TabBar className="large" currentTab={this.props.currentTab} tabs={this.props.tabs}/>
+          <TabBar className="large" currentTab={this.props.currentTab} tabButtons={this.props.tabButtons}/>
         </div>
       </div>
     );
@@ -113,21 +113,18 @@ RightGutterLarge = React.createClass({
 
 Layout = React.createClass({
   displayName: 'Layout',
-  mixins: [
-    React.addons.PureRenderMixin,
-    ListenerMixin
-  ],
+  mixins: [React.addons.PureRenderMixin],
   propTypes: {
     titleStitch: React.PropTypes.object.isRequired,
-    currentTabStitch: React.PropTypes.object.isRequired,
-    tabs: React.PropTypes.array.isRequired,
+    tabRouteStitch: React.PropTypes.object.isRequired,
+    tabButtons: React.PropTypes.array.isRequired,
     leftComponentStitch: React.PropTypes.object,
     rightComponentStitch: React.PropTypes.object,
   },
   getInitialState: function() {
     return {
       title: this.props.titleStitch.value,
-      currentTab: this.props.currentTabStitch.value.tab,
+      currentTab: this.props.tabRouteStitch.value.tab,
       leftComponent: this.props.leftComponentStitch.value,
       rightComponent: this.props.rightComponentStitch.value
     }
@@ -138,19 +135,22 @@ Layout = React.createClass({
     }
   },
   componentWillMount: function() {
-    this.addListener(this.props.leftComponentStitch.on(this.set('leftComponent')))
-    this.addListener(this.props.rightComponentStitch.on(this.set('rightComponent')))
-    this.addListener(this.props.titleStitch.on(this.set('title')))
-    this.addListener(this.props.currentTabStitch.on(({tab}) => {
+    this.listeners = []
+    this.listeners.push(this.props.leftComponentStitch.on(this.set('leftComponent')))
+    this.listeners.push(this.props.rightComponentStitch.on(this.set('rightComponent')))
+    this.listeners.push(this.props.titleStitch.on(this.set('title')))
+    this.listeners.push(this.props.tabRouteStitch.on(({tab}) => {
       this.setState({currentTab:tab})
     }))
   },
-
+  componentWillUnmount: function() {
+    this.listeners.map((f) => {f()})
+  },
   render: function() {
     return (
       <div className="layout">
         <NavBarSmall title={this.state.title} left={this.state.leftComponent} right={this.state.rightComponent}/>
-        <NavBarLarge title={this.state.title} currentTab={this.state.currentTab} tabs={this.props.tabs}/>
+        <NavBarLarge title={this.state.title} currentTab={this.state.currentTab} tabButtons={this.props.tabButtons}/>
         <div className="inner-layout">
           <LeftGutterLarge left={this.state.leftComponent}/>
           <div className="content">
@@ -158,7 +158,7 @@ Layout = React.createClass({
           </div>
           <RightGutterLarge right={this.state.rightComponent}/>
         </div>
-        <TabBar className="small" currentTab={this.state.currentTab} tabs={this.props.tabs}/>
+        <TabBar className="small" currentTab={this.state.currentTab} tabButtons={this.props.tabButtons}/>
       </div>
     );
   }
