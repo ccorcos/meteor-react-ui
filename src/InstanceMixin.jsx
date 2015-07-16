@@ -1,16 +1,17 @@
 
-var saveReactInstanceStitch = createStitch()
+var saveReactInstanceDispatcher = createDispatcher()
 
-this.saveReactInstance = saveReactInstanceStitch.set
+this.saveReactInstance = saveReactInstanceDispatcher.dispatch
 
 // this mixin handles stopping stitch listeners and saving the component
-this.ReactInstanceMixin = {
+this.InstanceMixin = {
   componentWillMount: function() {
-    this.listeners = []
-    this.save && this.listeners.push(saveReactInstanceStitch.listen(this.save))
+    if (this.save) {
+      this.saveListener = saveReactInstanceDispatcher.register(this.save)
+    }
   },
   componentWillUnmount: function() {
-    this.listeners.map(({stop}) => {stop()})
+    this.saveListener && this.saveListener.stop()
     this.save && this.save()
   }
 }

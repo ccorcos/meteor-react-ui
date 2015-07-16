@@ -2,14 +2,14 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 this.NavVC = React.createClass({
   displayName: 'NavVC',
-  mixins: [React.addons.PureRenderMixin, UIMixin],
+  mixins: [React.addons.PureRenderMixin, InstanceMixin],
   propTypes: {
     instance: React.PropTypes.object.isRequired,
-    initialSceneRoute: React.PropTypes.object.isRequired,
+    rootScene: React.PropTypes.object.isRequired,
     renderScene: React.PropTypes.func.isRequired,
-    listenPush: React.PropTypes.func.isRequired,
+    registerPush: React.PropTypes.func.isRequired,
     setPop: React.PropTypes.func.isRequired,
-    listenPopFont: React.PropTypes.func,
+    registerPopFront: React.PropTypes.func,
     className: React.PropTypes.string
   },
   getInitialState: function() {
@@ -19,7 +19,7 @@ this.NavVC = React.createClass({
       return {
         animation: 'navvc-appear',
         stack: [{
-          sceneRoute: this.props.initialSceneRoute,
+          sceneRoute: this.props.rootScene,
           instance: {}
         }]
       }
@@ -57,10 +57,14 @@ this.NavVC = React.createClass({
   },
   componentWillMount: function() {
     // start listeners
-    this.props.listenPush && this.listeners.push(this.props.listenPush(this.push))
-    this.props.listenPopFont && this.listeners.push(this.props.listenPopFont(this.popFront))
+    this.listeners = []
+    this.props.registerPush && this.listeners.push(this.props.registerPush(this.push))
+    this.props.registerPopFront && this.listeners.push(this.props.registerPopFront(this.popFront))
     this.setState({animation: 'navvc-appear'})
     this.props.setPop(this.state.stack.length > 1 ? this.pop : null)
+  },
+  componentWillUnmount: function() {
+    this.listeners.map(({stop}) => {stop()})
   },
   save: function() {
     this.props.instance.state = this.state

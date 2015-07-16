@@ -19,8 +19,8 @@ Package.onUse(function(api) {
 
   api.addFiles([
     "src/utils.jsx",
-    "src/stitch.jsx",
-    "src/UIMixin.jsx",
+    "src/Dispatcher.jsx",
+    "src/InstanceMixin.jsx",
     "src/TabVC.jsx",
     "src/NavVC.jsx"
   ], 'client');

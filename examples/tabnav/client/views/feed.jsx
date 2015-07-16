@@ -23,7 +23,7 @@ feeds = {foxes, whales}
 
 Feed = React.createClass({
   displayName: 'Feed',
-  mixins: [React.addons.PureRenderMixin, UIMixin],
+  mixins: [React.addons.PureRenderMixin, InstanceMixin],
   propTypes: {
     instance: React.PropTypes.object.isRequired,
     kind: React.PropTypes.string.isRequired,

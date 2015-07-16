@@ -1,6 +1,6 @@
 Item = React.createClass({
   displayName: 'Item',
-  mixins: [React.addons.PureRenderMixin, UIMixin],
+  mixins: [React.addons.PureRenderMixin, InstanceMixin],
   propTypes: {
     instance: React.PropTypes.object.isRequired,
     setTitle: React.PropTypes.func.isRequired,
