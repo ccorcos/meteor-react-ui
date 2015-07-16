@@ -1,10 +1,19 @@
-# React Nav and Tab Contollers
+# React View Controllers
 
-- comment up the tabnav example
+This package contains two view controllers, TabVC and NavVC, that imitate their
+iOS counterparts, UITabBarController and UINavigationController.
 
-    meteor add react-runtime
-    meteor add jsx
+In addition, this package provides a pattern for saving the instances of your
+views so they can be restored between mounts and serialized and restored during
+live-reloads / hot-code-pushes.
+
+To get started, add this package to your project:
+
     meteor add ccorcos:react-ui
+
+This will imply the `react-runtime` package for you, or you can add it
+separately. If you want to use babel/jsx, you should add the `jsx` pacakge
+as well.
 
 # Concepts
 
@@ -287,3 +296,8 @@ Then anywhere you're calling an action that animates, specifically the push
 and pop animations, wrap those functions with the debouncer!
 
       <div onClick={debounce(this.pop)}>{'<'}</div>
+
+There are a plethora of routers out there. But we don't need all of the
+functionality of IronRouter or FlowRouter. I built the `ccorcos:client-router`
+package as a barebones router that you can use simply as an entry point to your
+program. Check out the tabnav example to see how I use it.
