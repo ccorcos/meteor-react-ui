@@ -1,10 +1,13 @@
 # React Nav and Tab Contollers
 
 # TODO
+- change the TabVC and NavVC APIs to be more similar.
 - finish this readme
 - more polished WORKING examples
 - comment up the tabnav example
 
+    meteor add react-runtime
+    meteor add jsx
     meteor add ccorcos:react-ui
 
 # Concepts
