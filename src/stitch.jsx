@@ -7,7 +7,7 @@ function counter() {
 }
 
 this.createStitch = function createStitch(initialValue=null) {
-  // each subscriber is assigned an id
+  // each subscriber is assigned an id so we can stop it
   var newId = counter()
 
   var obj = {
@@ -15,47 +15,22 @@ this.createStitch = function createStitch(initialValue=null) {
     value: initialValue,
   }
 
-  var updateListeners = function(value) {
+  obj.set = function(value) {
+    obj.value = value
+    // update listeners with the new value
     Object.keys(obj.listeners).map(function(id) {
       obj.listeners[id](value)
     })
   }
 
-  obj.set = function(value) {
-    obj.value = value
-    updateListeners(value)
-  }
   obj.listen = function(func) {
     var id = newId()
     obj.listeners[id] = func
-    return {stop: function() {
-      delete obj.listeners[id]
-    }}
+    return {
+      stop: function() {
+        delete obj.listeners[id]
+      }
+    }
   }
   return obj
-}
-
-saveStitch = createStitch()
-
-this.save = saveStitch.set
-
-this.UIMixin = {
-  componentWillMount: function() {
-    this.listeners = []
-    this.save && this.listeners.push(saveStitch.listen(this.save))
-  },
-  componentWillUnmount: function() {
-    this.listeners.map(({stop}) => {stop()})
-    this.save && this.save()
-  }
-}
-
-
-if (Meteor.isClient) {
-  this.appInstance = Meteor._reload.migrationData('react-ui') || {}
-
-  Meteor._reload.onMigrate('react-ui', function() {
-    save()
-    return [true, appInstance]
-  })
 }

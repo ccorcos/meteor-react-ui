@@ -20,15 +20,8 @@ Package.onUse(function(api) {
   api.addFiles([
     "src/utils.jsx",
     "src/stitch.jsx",
+    "src/UIMixin.jsx",
     "src/TabVC.jsx",
     "src/NavVC.jsx"
-  ]);
-
-  // api.export('createInstance')
-  // api.export('InstanceMixin')
-  // api.export('SaveScrollTopMixin')
-  // api.export('createStitch')
-  // api.export('NavVC')
-  // api.export('TabVC')
-
+  ], 'client');
 });
