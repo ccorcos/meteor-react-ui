@@ -1,8 +1,8 @@
 Package.describe({
-  name: "ccorcos:react-tabnav",
+  name: "ccorcos:react-ui",
   version: "0.0.1",
-  summary: "Tab and Nav controllers for React",
-  git: "https://github.com/ccorcos/meteor-react-tabnav",
+  summary: "React View Controllers for Meteor",
+  git: "https://github.com/ccorcos/meteor-react-ui",
 });
 
 

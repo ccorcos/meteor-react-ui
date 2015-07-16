@@ -301,3 +301,7 @@ There are a plethora of routers out there. But we don't need all of the
 functionality of IronRouter or FlowRouter. I built the `ccorcos:client-router`
 package as a barebones router that you can use simply as an entry point to your
 program. Check out the tabnav example to see how I use it.
+
+# To Do
+
+- lazy load images

@@ -10,5 +10,5 @@ ccorcos:client-router
 ramda:ramda
 react-runtime
 lauricio:less-autoprefixer
-ccorcos:react-tabnav
 zodern:nice-reload
+ccorcos:react-ui

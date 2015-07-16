@@ -8,7 +8,7 @@ blaze-tools@1.0.3
 boilerplate-generator@1.0.3
 callback-hook@1.0.3
 ccorcos:client-router@0.0.3
-ccorcos:react-tabnav@0.0.1
+ccorcos:react-ui@0.0.1
 check@1.0.5
 coffeescript@1.0.6
 cosmos:browserify@0.4.0
