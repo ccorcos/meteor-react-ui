@@ -1,27 +1,29 @@
 Package.describe({
   name: "ccorcos:react-ui",
-  version: "0.0.1",
-  summary: "React View Controllers for Meteor",
+  version: "0.1.0",
+  summary: "React Instance, Proxy, Data, and View Controllers",
   git: "https://github.com/ccorcos/meteor-react-ui",
 });
 
-
 Package.onUse(function(api) {
-
-  api.use([
-    "react-runtime",
-    "jsx"
-  ]);
-
-  api.imply([
-    "react-runtime",
-  ]);
-
+  api.versionsFrom('1.2');
+  var reactVersion = ;
+  var packages = [
+    'coffeescript',
+    'ccorcos:utils@0.0.1',
+    'random',
+    'react-runtime@0.13.3'
+  ]
+  api.use(packages);
+  api.imply(packages);
   api.addFiles([
-    "src/utils.jsx",
-    "src/Dispatcher.jsx",
-    "src/InstanceMixin.jsx",
-    "src/TabVC.jsx",
-    "src/NavVC.jsx"
+    'globals.js',
+    'init.coffee',
+    'data.coffee',
+    'proxy.coffee',
+    'instance.coffee',
+    'tabvc.coffee',
+    'navvc.coffee'
   ], 'client');
+  api.export(['ReactUI'], 'client');
 });
