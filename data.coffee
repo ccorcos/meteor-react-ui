@@ -38,5 +38,5 @@ ReactUI.Data = ReactUI.createView
   render: ->
     @props.render
       data: @state.data
-      fetch: @state.fetch
+      fetch: if @state.fetch then @fetch
       loading: @state.loading

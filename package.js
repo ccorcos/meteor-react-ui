@@ -7,7 +7,6 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2');
-  var reactVersion = ;
   var packages = [
     'coffeescript',
     'ccorcos:utils@0.0.1',
