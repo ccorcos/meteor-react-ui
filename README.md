@@ -1,78 +1,47 @@
 # React UI
 
-## Background
+This package package has everything you need to build a nice Meteor app using React.
 
-Background -- read the medium articles!
+# Getting Started
 
----
+    meteor add ccorcos:react-ui
 
-An instance is a mutable object passed as props which is mutated to save the state of
-the component so it can be restored. Here are some example of the concept (without
-even using this package):
+## Features
 
-```jsx
-var Counter = React.createClass({
-  displayName: 'Counter',
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    instance: React.PropTypes.object.isRequired
-  },
-  getInitialState: function() {
-    return this.props.instance.state || {count:10}
-  },
-  inc: function() {
-    this.setState({count: this.state.count + 1})
-  },
-  componentWillUnmount: function() {
-    this.props.instance.state = this.state
-  },
-  render: function() {
-    return <div>{this.state.count}</div>
-  }
-})
+### Instances
 
-var Article = React.createClass({
-  displayName: 'Article',
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    instance: React.PropTypes.object.isRequired,
-    text: React.PropTypes.string.isRequired
-  },
-  componentDidMount: function() {
-    this.getDOMNode().scrollTop = this.props.instance.scrollTop || 0
-  },
-  componentWillUnmount: function() {
-    this.props.instance.scrollTop = this.getDOMNode().scrollTop
-  },
-  render: function() {
-    return <div>{this.props.article}</div>
-  }
-})
-```
+`ReactUI.instance` and `ReactUI.InstanceMixin` allow you to remember view between mounts and survive across hot code pushes.
 
-## API
+[Check out this article](https://medium.com/p/e8b68bf398f4/).
 
-The top-level instance for your entire app is `ReactInstance` which should be
-passed to the top-level component as the `instance` prop.
+### Proxy
 
-```jsx
-var App = React.createClass({
-  displayName: 'App',
-  mixins: [React.addons.PureRenderMixin, InstanceMixin],
-  initializeInstance: function(instance) {
-    this.getDOMNode().scrollTop = instance.scrollTop || 0
-  },
-  save: function() {
-    return {scrollTop: this.getDOMNode().scrollTop}
-  },
-  render: function() {
-    return <div><Counter={this.childInstance('counter')}</div>
-  }
-})
-```
+`ReactUI.createProxy` let you render to different components.
 
-Then you can verify that its working by triggering a hot-reload:
+[Check out this article](https://medium.com/p/bb368510aad4/).
 
-```js
-Meteor._reload.reload()
-```
+### TabVC
+
+`ReactUI.TabVC` manages tab based views and their instances.
+
+[Check out this article](https://medium.com/p/48af935a5cd9/).
+
+### NavVC
+
+`ReactUI.NavVC` manages a navigation stack of views and their instances.
+
+[Check out this article](https://medium.com/p/414328034e6a/).
+
+### Others
+
+If you set `public.ui_debounce_ms` in your settings.json, then `ReactUI.debounce` will be a global debounce to pipe you're UI actions through. This is convenient to make sure that people aren't spamming and breaking your animations.
+
+`ReactUI.blurOnEnterTab` is a convenient handler onChange for a text field.
+
+`ReactUI.waitForUser` is a callback on startup once the async exchange is finished and the user is either logged in or not.
+
+`ReactUI.AutorunMixin` gives you `@autorun` and will stop them when the component unmounts.
+
+`ReactUI.hesitate` delays before calling a function an is cancelable. This is useful when an async request may take 50ms but an animation to a loading screen would take .5s. You can introduce 100ms of delay before going to the loading screen and skipping the loading screen altogether the websocket is responsive enough.
+
+`ReactUI.timeoutCallback` forces a callback to timeout after some time.
