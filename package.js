@@ -9,7 +9,7 @@ Package.onUse(function(api) {
   api.versionsFrom('1.2');
   var packages = [
     'coffeescript',
-    'ccorcos:utils@0.0.1',
+    'ccorcos:utils@0.0.2',
     'random',
     'react-runtime@0.13.3'
   ]
