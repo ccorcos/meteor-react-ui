@@ -72,3 +72,6 @@ ReactUI.timeoutCallback = (ms, f) ->
     unless called
       Meteor.clearTimeout(id)
       f?.apply(null, args)
+
+ReactUI.cond = (x, y, z) ->
+  if x then y() else z?()
