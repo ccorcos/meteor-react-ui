@@ -1,6 +1,6 @@
 [![Meteor Icon](http://icon.meteor.com/package/ccorcos:react-ui)](https://atmospherejs.com/ccorcos/react-ui)
 
-# React UI
+# React UI [MAINTAINER WANTED]
 
 This package package has everything you need to build a nice Meteor app using React.
 
